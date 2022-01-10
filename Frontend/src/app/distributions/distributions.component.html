@@ -1,0 +1,76 @@
+<!-- Header Start -->
+<app-header></app-header>
+<!-- Header End -->
+
+
+<div class="content-wrapper">
+    <!-- Sidebar Start -->
+    <app-side-bar></app-side-bar>
+    <!-- Sidebar End -->
+
+    <!--Body Content start-->
+    <div class="main-container  m-4">
+        <div class="sub-header d-flex align-items-center justify-content-between pb-2">
+            <div class="">
+                <h3>Distributions</h3>
+                <p>For {{DistributionValue.length}} Investments</p>
+            </div>
+            <div class="d-flex">
+                <select class="mr-3" name="" id="" (change)="onOffering($event)">
+          <option *ngFor="let item of DropdownOffering" [value]="item.id == 'null' ? '': item.id"
+            [selected]="item.id == OfferingId">
+            {{ item.name }}
+          </option>
+        </select>
+                <select name="" id="" (change)="onProfile($event)">
+          <option *ngFor="let item of DropdownProfile" [value]="item.id == 'null' ? '': item.id"
+            [selected]="item.id == ProfileId">
+            {{ item.name }}
+          </option>
+        </select>
+            </div>
+
+        </div>
+
+        <div class="table-wrapper mt-4">
+            <div *ngIf="DistributionData.length == 0">
+                <p>No distributions for this investments...</p>
+            </div>
+            <div *ngIf="DistributionData.length != 0">
+                <table class="documents-table mt-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">Offering</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Profile</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Memo</th>
+                            <th scope="col">Method</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of DistributionData | paginate: config">
+                            <td>{{item.offeringName}}</td>
+                            <td>{{item.receivedDate | date}}</td>
+                            <td>{{item.ProfileName}}</td>
+                            <td>{{item.amountInvested| currency:'USD' : 'symbol' : '1.0-0'}}</td>
+                            <td>{{item.type}}</td>
+                            <td>{{item.memo}}</td>
+                            <td>{{item.distributionMethod}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+        </div>
+    </div>
+
+    <!--Body Content End-->
+
+
+
+</div>
+<div class="loader" *ngIf="Loader">
+    <div class="dot-flashing"></div>
+</div>

@@ -1,0 +1,97 @@
+<div class="login-content-wrapper">
+  <div class="row">
+    <div class="col-sm-6 d-flex align-items-center justify-content-center">
+    </div>
+    <div class="col-sm-6">
+      <div class="login-container">
+        <div class="auth-wrapper w-100">
+          <div class="card">
+            <div class="brand-wrapper">
+              <img src="../../assets/images/Credor-logo.png" class="" alt="credor-logo" width="100px">
+            </div>
+            <h2 class="text-center mt-4 mb-4">Sign Up to View Opportunities</h2>
+            <form [formGroup]="SignUpForm">
+              <div class="row">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="firstname" class="">First Name</label>
+                    <input type="text" class="input-field" formControlName="Firstname" [disabled]="true">
+                  </div>
+                </div>
+                <div class="col pr-0">
+                  <div class="field-group">
+                    <label for="lastname" class="">Last Name</label>
+                    <input type="text" class="input-field" formControlName="Lastname" [disabled]="true">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col pl-0 pr-0">
+                  <div class="field-group">
+                    <label for="email" class="">Email</label>
+                    <input type="email" class="input-field" formControlName="Email" [disabled]="true"`>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="password" class="">Create Password</label>
+                    <div class="field-group">
+                      <div class="input-field-group">
+                        <input type="password" formControlName="CreatePassword" class="input-field"
+                          (keydown.space)="$event.preventDefault();" (blur)="onPassword($event)">
+                      </div>
+                    </div>
+                    <div class="validation-msg">
+                      <div *ngIf="EmptyPassword">Password is required.</div>
+                      <div *ngIf="ValidLowercase">
+                        <br>Password must have one lowercase character.
+                      </div>
+                      <div *ngIf="ValidUppercase">
+                        Password must have one uppercase character.
+                      </div>
+                      <div *ngIf="ValidNumbercase">
+                        Password must have one number.
+                      </div>
+                      <div *ngIf="ValidSpecialcase">
+                        Password must have one special character.
+                      </div>
+                      <div *ngIf="ValidLengthcase">
+                        Password must be at least 8 characters.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col pr-0 pt-2">
+                  <label for="confirmpassword" class="">Confirm Password</label>
+                  <div class="input-field-group">
+                    <input type="password" formControlName="ConfirmPassword" (keydown.space)="$event.preventDefault();"
+                      (blur)="onConfirmPassword($event)" class="input-field">
+                  </div>
+                  <div class="validation-msg">
+                    <div *ngIf="EmptyConfirmPassword">Confirm password is required.</div>
+                    <div *ngIf="ValidConfirmPassword">Passwords must match.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <button type="submit" class="button button-secondary">Register</button>
+                <div class="text-center mt-4">Already have an account?
+                  <a href="javascript:void(0);" (click)="Login()">Login here</a>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader" *ngIf="Loader">
+    <div class="dot-flashing"></div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# SQL Server Management Studio Solution File, Format Version 18.00
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Credor", "Credor\Credor.ssmssqlproj", "{82B5C3E8-B0CC-4AC7-B8D8-FF722CCCFB65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Default = Default|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82B5C3E8-B0CC-4AC7-B8D8-FF722CCCFB65}.Default|Default.ActiveCfg = Default
+		{043FC545-CD5A-4F59-AF21-20677E151564}.Default|Default.ActiveCfg = Default
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D1E97A6-8FA0-431D-86B0-2825C5E447CB}
+	EndGlobalSection
+EndGlobal

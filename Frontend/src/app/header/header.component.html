@@ -1,0 +1,124 @@
+<header>
+  <div [ngClass]="UserId != null ?'login-main-header pr-5 pl-5' : 'main-header'">
+    <nav class="header-nav d-flex align-items-center justify-content-between p-0">
+      <div class="brand-wrapper">
+        <img src="../../assets/images/Credor-logo.png" style="cursor: pointer" class="" alt="credor-logo" width="100px" (click)="onLogo()">
+      </div>
+      <div class="nav-right">
+        <ul class="d-flex">
+          <li class="nav-link" *ngIf="UserId != null && RoleId == 1" routerLink='/invest' routerLinkActive="active">Invest</li>
+          <li class="nav-link" *ngIf="UserId != null && RoleId == 1" routerLink='/myinvestment' routerLinkActive="active"
+          [ngClass]="true ?'active' : ''">Dashboard
+          </li>
+          <li class="nav-link" *ngIf="RoleId == 1">About Us</li>
+          <li class="nav-link" *ngIf="RoleId == 1">Contact</li>
+          <li class="nav-link" *ngIf="UserId == null" routerLink='/login' routerLinkActive="active">Login</li>
+          <li class="nav-link" *ngIf="UserId == null" routerLink='/register' routerLinkActive="active">Sign up</li>
+        </ul>
+
+        <div class="notification d-flex mr-3" *ngIf="UserId != null" (click)="NotificationClick()">
+          <a class="nav-link slider-toggle icon-only" href="javascript:void(0);">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
+            </svg>
+            <span class="bubble">{{NotificationData.length}}</span>
+            <div class="notification-dropdown-menu" *ngIf="NotificationDropdown">
+              <div class="dropdown-menu-content">
+                <div class="quick-links py-3">
+                  <div class="list-icon list-icon-small">
+                    <div class="item-content" style="max-width: 650px;">
+                      <div class="text-center mt-2">
+                        <button class="button" (click)="ClearAll()">Clear All</button>
+                      </div>
+                      <div class="p-3" *ngIf="NotificationData.length == 0">
+                        No New Notifications!
+                      </div>
+                      <div *ngIf="NotificationData.length > 0">
+                        <div *ngFor="let item of Notification">
+                          <div class="notification-wrapper d-flex align-items-center justify-content-between">
+                            <div>
+                              <div class="d-flex align-items-center">
+                                <img class="mr-2" *ngIf="item?.createdByProfileImageURL ==  null"
+                                  src="../../assets/images/user-icon.png" alt="" width="24" height="24">
+                                <img class="mr-2" *ngIf="item?.createdByProfileImageURL !=  null"
+                                  src="{{item.createdByProfileImageURL}}" alt="" width="24" height="24">
+                                <P>{{item.message}}</P>
+                              </div>
+                              <div class="notification-date">{{item.createdOn | date}}</div>
+                            </div>
+                            <div>
+                              <button class="button icon-only button-clear ml-2" (click)="Read(item)">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
+                                  <path d="M0 0h24v24H0V0z" fill="none" />
+                                  <path
+                                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-center mt-4">
+                          <button type="button" class="button " (click)="onLoadMore()">Load More</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="dropdown" (mouseenter)="profileDropdown=true" (mouseleave)="profileDropdown=false"
+          *ngIf="UserId != null">
+          <a class="nav-link pr-0">
+            <img *ngIf="ProfileImg == 'null'" src="../../assets/images/user-icon.png" alt="" width="24"
+              height="24">
+            <img *ngIf="ProfileImg != 'null'" src="{{ProfileImg}}" alt="" width="24"
+              height="24">
+          </a>
+          <div class="dropdown-menu" *ngIf="profileDropdown">
+            <div class="dropdown-menu-content">
+              <div class="quick-links py-2">
+                <div class="list-icon list-icon-small">
+                  <a class="d-flex align-items-center">
+                    <div class="icon ml-3 mt-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"
+                        fill="#000000">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM7.07 18.28c.43-.9 3.05-1.78 4.93-1.78s4.51.88 4.93 1.78C15.57 19.36 13.86 20 12 20s-3.57-.64-4.93-1.72zm11.29-1.45c-1.43-1.74-4.9-2.33-6.36-2.33s-4.93.59-6.36 2.33C4.62 15.49 4 13.82 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8c0 1.82-.62 3.49-1.64 4.83zM12 6c-1.94 0-3.5 1.56-3.5 3.5S10.06 13 12 13s3.5-1.56 3.5-3.5S13.94 6 12 6zm0 5c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z" />
+                      </svg>
+                    </div>
+                    <div class="item-content ml-2" (click)="Account()">
+                      Account
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="quick-links py-2">
+                <div class="list-icon list-icon-small">
+                  <a class="d-flex align-items-center">
+                    <div class="icon ml-3 mt-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z" />
+                      </svg>
+                    </div>
+                    <div class="item-content ml-2" (click)="logout()">
+                      Logout
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,2503 @@
+<!-- Header Start -->
+<app-header></app-header>
+<!-- Header End -->
+
+
+<div class="content-wrapper">
+  <!-- Sidebar Start -->
+  <app-side-bar></app-side-bar>
+  <!-- Sidebar End -->
+  <div class="main-container m-4" *ngIf="ShowBulkDocumentUpload" >     
+    <div class="sub-header d-flex align-items-center pb-2">
+   <div class="backbtnimg"(click)="OnBulkUploadDocumentBack()"> <img class="backimg"  src="../../assets/images/icons/back.svg" ></div>
+      <span class="request-date ml-3 justify-content-between"></span>
+      <h3>Bulk Document Upload</h3>
+    </div> 
+    <div class="header-nav tab-menu p-3 mb-4 d-flex align-items-center justify-content-between">              
+      <div>                  
+      </div>        
+      <div>                                                          
+        <button class="button mb-2" (click)="UploadDocuments()">Upload Documents</button> 
+      </div>            
+      </div>  
+    <div *ngIf="ShowDocumentBatchDetail">
+      <div class="table-wrapper mt-4">
+        <div *ngIf="DocumentBatches.length <= 0">No Bulk Documents</div>
+        <table class="documents-table" *ngIf="DocumentBatches.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">Batch Name</th>
+              <th scope="col">Total Files</th>
+              <th scope="col">Status</th>
+              <th scope="col">Created On</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of DocumentBatches">
+              <td>{{item.batchName}}</td>
+              <td>{{item.totalDocuments}}</td>
+              <td>
+                <span *ngIf="item.status == 1">Pending</span>
+                <span *ngIf="item.status == 2">Pending</span>
+                <span *ngIf="item.status == 3">Completed</span>       
+              </td>
+              <td>{{item.createdOn | date}}</td>
+              <td>
+                <span class="action-icon" (click)="onEditBatch(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="onDeleteBatch(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>   
+  </div>  
+
+  <div class="main-container m-4" *ngIf="BulkUploadStepNavigation" >     
+    <div class="sub-header d-flex align-items-center pb-2">  
+  <div class="backbtnimg"(click)="OnBulkUploadStepNavigationBack()"> <img class="backimg"  src="../../assets/images/icons/back.svg" ></div>
+      <span class="request-date ml-3 justify-content-between"></span>       
+      <h3>Bulk Document Upload</h3>
+    </div> 
+    <div class="marketplace-deal-wrapper" *ngIf="BulkUploadStepNavigation">
+      <div class="row justify-content-center">
+        <div class="col-sm-9 p-0">
+          <div class="card p-4 mt-4">
+            <div class="card-content">
+              <div class="form-wrapper" *ngIf="BulkUploadStepNavigation">
+                <div class="step-nav d-flex justify-content-center">
+                  <div [ngClass]="{active: uploadFilesShow,done: uploadFilesDone}"
+                    class="step-nav-item p-3 d-flex align-items-center flex-column">
+                    <span class="step-indicator mb-2">
+                      <span *ngIf="uploadFilesShow && !uploadFilesDone" class="icon icon1step  icon-24 icon-current"></span>
+                      <span *ngIf="!uploadFilesShow && !uploadFilesDone" class="icon icon1step icon11step icon-24 icon-radio"></span>
+                      <span *ngIf="uploadFilesDone" class="icon icon11step icon1step icon-24 icon-done"></span>
+                    </span>
+                    <span>Upload Files</span>
+                  </div>
+                  <div [ngClass]="{active: matchShow,done: matchDone}"
+                    class="step-nav-item p-3 d-flex align-items-center flex-column">
+                    <span class="step-indicator mb-2">
+                      <span *ngIf="matchShow && !matchDone" class="icon  icon2step icon-24 icon-current"></span>
+                      <span *ngIf="!matchShow && !matchDone" class="icon icon2step icon-24 icon-radio"></span>
+                      <span *ngIf="matchDone" class="icon icon2step icon22step icon-24 icon-done"></span>
+                    </span>
+                    <span>Matching</span>
+
+                  </div>
+                  <div [ngClass]="{active: reviewShow,done: reviewDone}"
+                    class="step-nav-item p-3 d-flex align-items-center flex-column">
+                    <span class="step-indicator mb-2">
+                      <span *ngIf="reviewShow && !reviewDone" class="icon  icon3step icon-24 icon-current"></span>
+                      <span *ngIf="!reviewShow && !reviewDone" class="icon icon3step icon-24 icon-radio"></span>
+                      <span *ngIf="reviewDone" class="icon icon3step icon33step icon-24 icon-done"></span>
+                    </span>
+                    <span>Review</span>
+                  </div>
+                  <div [ngClass]="{active: publishShow,done: publishDone}"
+                    class="step-nav-item p-3 d-flex align-items-center flex-column">
+                    <span class="step-indicator mb-2">
+                      <span *ngIf="publishShow && !publishDone" class="icon  icon4step icon-24 icon-current"></span>
+                      <span *ngIf="!publishShow && !publishDone" class="icon icon4step icon-24 icon-radio"></span>
+                      <span *ngIf="publishDone" class="icon icon4step icon44step icon-24 icon-done"></span>
+                    </span>
+                    <span>Complete</span>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="uploadFilesShow " class="mt-4">
+                <div *ngIf="UploadFile">             
+                  <div class=" d-flex align-items-center justify-content-between">
+                    <div>
+                      <h3>Upload Files in Batches</h3>
+                      <br/>
+                      <div class="alert mt-3">
+                        <span class="pr-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"
+                            fill="#c8202f">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                              d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                          </svg>
+                        </span>
+                        <span>You can upload up to 100 documents at a time. Documents will be automatically matched to 
+                          investor accounts based upon the profile name in the file name of the document. 
+                          Therefore, all of the files must share the same file naming convention. 
+                          You will review all matches in the next step before publishing.
+                          <a  target="_blank" href="https://syndicationprohelp.freshdesk.com/support/solutions/articles/47001172139-how-to-bulk-upload-documents">Learn More</a>
+                        </span>           
+                      </div>  
+                      <br/>    
+                      <table class="align-items-center formtable">
+                        <tbody>
+                          <tr><td>&nbsp;</td></tr>
+                          <tr>                
+                            <td>
+                              <div class="m-7 d-flex align-items-center">                                 
+                                  <label for="" >Batch Name: <span class="validation-msg">*</span>
+                                    <span class="request-date ml-3 justify-content-between"></span>               
+                                  </label>             
+                                  <div class="tooltip-wrapper tooltip-lg">                
+                                    <div class="tooltip-toggle icon-only">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                                        <path d="M0,0H18V18H0Z" fill="none" />
+                                        <path
+                                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                                      </svg>                                   
+                                    </div> 
+                                    <div class="tooltip-text">                  
+                                      This is for your reference only, investors won’t see this
+                                    </div>                            
+                                  </div>                        
+                                </div>                                                                                            
+                            </td>  
+                            <td>
+                              <span class="request-date ml-3 justify-content-between"></span>             
+                              <input disabled class="input-field"  [(ngModel)]="batchName" placeholder="Enter the Batch Name" (blur)="onBatchName()" type="text">
+                              <div *ngIf="batchNameError" class="validation-msg">
+                                <span class="request-date ml-3 justify-content-between"></span>  
+                                <span>Batch Name is required</span>
+                              </div>                                                
+                            </td>             
+                          </tr> 
+                          <tr><td>&nbsp;</td></tr>
+                          <tr>
+                            <td>
+                              <div class="m-7 d-flex align-items-center">      
+                                <label>Document Type: <span class="validation-msg">*</span></label>    
+                                <span class="request-date ml-3 justify-content-between"></span>
+                                <span class="request-date ml-3 justify-content-between"></span>    
+                                <span class="request-date ml-3 justify-content-between"></span>                         
+                              </div>
+                            </td>
+                            <td>
+                              <span class="request-date ml-3 justify-content-between"></span>                                                  
+                              <select disabled class="input-field" style="height:40px;" id="DocumentTypeId" name="DocumentTypeId" (change)="onDocumentTypeChange($event)"
+                              [(ngModel)]="DocumentTypeId" (blur)="onDocumentType()">
+                                <option *ngFor="let item of DocumentTypes" [value]="item.id == 'null' ? '': item.id"
+                                  [selected]="item.id == DocumentTypeId">
+                                  {{ item.name }}
+                                </option>
+                              </select>
+                              <div *ngIf="documentTypeError" class="validation-msg">
+                                <span class="request-date ml-3 justify-content-between"></span>  
+                                <span>Document Type is required</span>
+                              </div> 
+                            </td>                  
+                          </tr> 
+                          <tr><td>&nbsp;</td></tr>
+                          <tr>
+                            <td>
+                              <div class="m-7 d-flex align-items-center">                                    
+                                <label for="">Delimiter:  <span class="validation-msg">*</span></label>
+                                <span class="request-date ml-3 justify-content-between"></span>              
+                                <div class="tooltip-wrapper tooltip-lg">
+                                  <div class="tooltip-toggle icon-only">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                                      <path d="M0,0H18V18H0Z" fill="none" />
+                                      <path
+                                        d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                                    </svg>
+                                  </div> 
+                                  <div class="tooltip-text">
+                                    If your file name is : K1 Tax Document_Mary Williams.pdf then the delimiter is Underscore (_)
+                                  </div>               
+                              </div>                          
+                          </div>   
+                            </td>
+                            <td>
+                              <span class="request-date ml-3 justify-content-between"></span>                                                  
+                              <select disabled class="input-field" style="height: 40px;" id="NameDelimiterId" name="NameDelimiterId" (change)="onNameDelimiterChange($event)"
+                                [(ngModel)]="NameDelimiterId"(blur)="onDelimiter()">
+                                <option *ngFor="let item of NameDelimiters" [value]="item.id"
+                                  [selected]="item.id == NameDelimiterId">
+                                  {{ item.name }}
+                                </option>
+                              </select>     
+                              <div *ngIf="delimiterError" class="validation-msg">
+                                <span class="request-date ml-3 justify-content-between"></span>  
+                                <span>Delimiter is required</span>
+                              </div>              
+                            </td>
+                          </tr> 
+                          <tr><td>&nbsp;</td></tr>
+                          <tr>
+                            <td>
+                              <div class="m-7 d-flex align-items-center">
+                                <label for="">Name Position:  <span class="validation-msg">*</span></label>
+                                <span class="request-date ml-3 justify-content-between"></span>
+                                <div class="tooltip-wrapper tooltip-lg">
+                                  <div class="tooltip-toggle icon-only">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                                      <path d="M0,0H18V18H0Z" fill="none" />
+                                      <path
+                                        d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                                    </svg>
+                                  </div>
+                                  <div class="tooltip-text">
+                                    If your file name is: K1 Tax Document_Mary Williams.pdf then the Name Position is End of file name
+                                  </div>
+                                </div>            
+                              </div>
+                            </td>
+                            <td>
+                              <span class="request-date ml-3 justify-content-between"></span>                                                  
+                              <select disabled class="input-field" style="height: 40px;" id="NamePositionId" name="NamePositionId" (change)="onNamePositionChange($event)"
+                               [(ngModel)]="NamePositionId" (blur)="onNamePosition()">
+                                <option *ngFor="let item of NamePositions" [value]="item.id"
+                                  [selected]="item.id == NamePositionId">
+                                  {{ item.name }}
+                                </option>
+                              </select>
+                              <div *ngIf="namePositionError" class="validation-msg">
+                                <span class="request-date ml-3 justify-content-between"></span>  
+                                <span>Name Position is required</span>
+                              </div> 
+                            </td>
+                          </tr> 
+                          <tr><td>&nbsp;</td></tr>
+                          <tr>
+                            <td>
+                              <div class="m-7 d-flex align-items-center">
+                                <label for="">Name Seperator:  <span class="validation-msg">*</span></label>
+                                <span class="request-date ml-3 justify-content-between"></span>
+                                <div class="tooltip-wrapper tooltip-lg">
+                                  <div class="tooltip-toggle icon-only">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                                      <path d="M0,0H18V18H0Z" fill="none" />
+                                      <path
+                                        d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                                    </svg>
+                                  </div>
+                                  <div class="tooltip-text">
+                                    If your file name is: K1 Tax Document_Mary Williams.pdf then the Name Position is End of file name
+                                  </div>
+                                </div>            
+                              </div>
+                            </td>
+                            <td>
+                              <span class="request-date ml-3 justify-content-between"></span>                                                  
+                              <select disabled class="input-field" style="height: 40px;" id="NameSeparatorId" name="NameSeparatorId" (change)="onNameSeparatorChange($event)"
+                               [(ngModel)]="NameSeparatorId"  (blur)="onNameSeparator()">
+                                <option *ngFor="let item of NameSeparators" [value]="item.id"
+                                  [selected]="item.id == NameSeparatorId">
+                                  {{ item.name }}
+                                </option>
+                              </select> 
+                              <div *ngIf="nameSeparatorError" class="validation-msg">
+                                <span class="request-date ml-3 justify-content-between"></span>  
+                                <span>Name Seperator is required</span>
+                              </div>
+                              <div *ngIf="delimiterSeparatorError" class="validation-msg">
+                                <span class="request-date ml-3 justify-content-between"></span>  
+                                <span>Name Seperator should not be same as Delimiter</span>
+                              </div> 
+                            </td>                
+                          </tr>
+                          <tr><td>&nbsp;</td></tr>          
+                        </tbody>
+                      </table>         
+                    </div>                  
+                  </div>        
+                  <div>
+                  <div class="dropzone dragfile" appDrag (files)="onFileChange($event)">                     
+                        <div class="align-items-center">
+                          <span class="request-date ml-3 justify-content-between"></span>
+                          <span class="request-date ml-3 justify-content-between"></span>                                                    
+                          <input type="file" class="sr-only" name="file" id="file" (change)="onFileChange1($event)" multiple>                        
+                          <label class="align-items-center" for="file">Drag & drop files here or click to select files</label>
+                          <span class="request-date ml-3 justify-content-between"></span>
+                          <span class="request-date ml-3 justify-content-between"></span>                                  
+                      </div>
+                    </div>    
+
+                    <div *ngFor="let item of DocumentFile; let i = index">
+                      <div class="row justify-content-center mt-3">
+
+<div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-10">{{item.File.name}}</div>
+
+                        <div class="col">
+                          <span class="action-icon" (click)="OnRemoveDoc(item.Id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                              <path d="M0 0h24v24H0V0z" fill="none" />
+                              <path
+                                d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                            </svg>
+                          </span>
+                        </div>
+
+                      </div>
+                      </div>
+
+                      </div>
+                    </div>
+                    <div  class="validation-msg" *ngIf="DocumentFile.length > 10">                      
+                      The current documents count exceed the limit of 10 documents, please ensure that the total document count is
+                      not more than 10 (Current: {{DocumentFile.length}}).
+                    </div>
+                    <div  class="validation-msg"*ngIf="DocSizeBool">
+                      The following documents exceeds the file size limit of 100MB, please ensure that the document size is not
+                      beyond 100 MB.
+                    </div>
+                    <div class=" modal-footer text-center mt-5">
+                      <button class="button-outline" (click)="onSaveandUpload()">Upload</button>
+                    </div>
+                  </div>                 
+              </div>                                   
+              </div>
+              <div *ngIf="matchShow">
+                <div class="tab-menu mb-4">
+                  <div class="deal-content">
+                    <div class="deal-highlight-content d-flex justify-content-between">
+                      <div class="highlights pt-0 ">
+                        <h3>Total Files</h3>
+                        <p>{{TotalDocuments}}</p>
+                      </div>
+                      <div class="highlights pt-0">
+                        <h3>Matched Files</h3>
+                        <p>{{TotalMatched}}</p>
+                      </div>
+                      <div class="highlights pt-0">
+                        <h3>UnMatched Files</h3>
+                        <p>{{TotalUnmatched}}</p>
+                      </div>                      
+                    </div>
+                  </div>
+                </div> 
+                <div class=" modal-footer text-center mt-5">
+                  <button class="button-outline" (click)="onReviewDocuments()">Continue to Review</button>
+                </div>                 
+              </div>
+              <div *ngIf="reviewShow">
+                <div class="table-wrapper mt-4">
+                  <div *ngIf="MatchedDocuments.length <= 0">No Matched Documents</div>
+                  <table class="documents-table" [(ngModel)]="MatchedDocuments" *ngIf="MatchedDocuments.length > 0">
+                    <thead>
+                      <tr>
+                        <th scope="col">File Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Investor Name</th>
+                        <th scope="col">Profile Name</th>
+                        <th scope="col">Document Type</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of MatchedDocuments">
+                        <td>{{item.documentName}}</td>
+                        <td>{{item.matchedBy}}</td>                                                
+                        <td>
+                          <div *ngIf="item.isMatchfound == true">
+                            {{ item.investorName }}
+                          </div>
+                          <div *ngIf="item.isMatchfound == false">
+                            <select class="input-field" style="height: 40px;" id="DocumentUserId" name="DocumentUserId" (change)="onDocumentUserChange(item.userId)"
+                            [(ngModel)]="item.userId">
+                            <option *ngFor="let investor of InvestorDetails" [value]="investor.id" onchange="onDocumentUserChange(investeor.id)"
+                              [selected]="investor.id == item.userId">
+                              {{ investor.fullName }}
+                            </option>
+                            </select>
+                          </div> 
+                        </td>
+                        <td>
+                          <div *ngIf="item.isMatchfound == true">
+                            <select class="input-field" style="height: 40px;" id="DocumentProfileId" name="DocumentProfileId" (change)="onDocumentProfileChange(item.profileId)"
+                              [(ngModel)]="item.profileId">
+                              <option *ngFor="let profile of item.userProfiles" [value]="profile.id"
+                                [selected]="profile.id == item.profileId">
+                                {{ profile.profileName }}
+                              </option>
+                            </select>  
+                          </div>
+                          <div *ngIf="item.isMatchfound == false">
+                            <select class="input-field" style="height: 40px;" id="DocumentProfileId" name="DocumentProfileId" (change)="onDocumentProfileChange(item.profileId)"
+                              [(ngModel)]="item.profileId">
+                              <option *ngFor="let profile of DocumentProfiles" [value]="profile.id"
+                                [selected]="profile.isOwner == true">
+                                {{ profile.profileName }}
+                              </option>
+                            </select>  
+                          </div>                        
+                        </td>
+                        <td>
+                          <span *ngIf="item.documentType == 1">Tax Documents</span>
+                          <span *ngIf="item.documentType == 2">Subscriptions</span>
+                          <span *ngIf="item.documentType == 3">Accreditation</span>
+                          <span *ngIf="item.documentType == 4">Offering Documents</span>
+                          <span *ngIf="item.documentType == 5">Miscellaneous</span>
+                          <span *ngIf="item.documentType == 6">Updates</span>
+                        </td>
+                        <td>
+                          <span class="action-icon" (click)="onEditDocument(item)">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                              <path d="M0 0h24v24H0V0z" fill="none" />
+                              <path
+                                d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                            </svg>
+                          </span>
+                          <span class="action-icon" (click)="onDeleteDocument(item)">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                              <path d="M0 0h24v24H0V0z" fill="none" />
+                              <path
+                                d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                            </svg>
+                          </span>
+                        </td>
+                      </tr>                                            
+                    </tbody>                    
+                  </table>
+                  <div class="modal-footer text-center mt-5">
+                    <div class="alert mt-3">
+                      <span class="pr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"
+                          fill="#c8202f">
+                          <path d="M0 0h24v24H0V0z" fill="none" />
+                          <path
+                            d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                        </svg>
+                      </span>
+                      <span>
+                        Note: Un-macthed documents will be excluded in the publish process.                        
+                      </span>           
+                    </div>  
+                    <br/>   
+                    <button class="button-outline" (click)="onPublishDocuments(MatchedDocuments)">Publish</button>
+                  </div> 
+                </div>                            
+              </div>
+              <div *ngIf="publishShow">
+                <div class="table-wrapper mt-4">
+                  <div *ngIf="FinalMatchedDocuments.length <= 0">No Published Documents</div>
+                  <table class="documents-table" [(ngModel)]="FinalMatchedDocuments" *ngIf="FinalMatchedDocuments.length > 0">
+                    <thead>
+                      <tr>
+                        <th scope="col">File Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Investor Name</th>
+                        <th scope="col">Profile Name</th>
+                        <th scope="col">Document Type</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of FinalMatchedDocuments">
+                        <td>{{item.documentName}}</td>
+                        <td><span>Published</span></td>                                                
+                        <td>
+                          <div>
+                            {{ item.investorName }}
+                          </div>                          
+                        </td>
+                        <td>
+                          <div>
+                            <div>
+                              {{ item.profileName }}
+                            </div> 
+                          </div>                                                  
+                        </td>
+                        <td>
+                          <span *ngIf="item.type == 1">Tax Documents</span>
+                          <span *ngIf="item.type == 2">Subscriptions</span>
+                          <span *ngIf="item.type == 3">Accreditation</span>
+                          <span *ngIf="item.type == 4">Offering Documents</span>
+                          <span *ngIf="item.type == 5">Miscellaneous</span>
+                          <span *ngIf="item.type == 6">Updates</span>
+                        </td>
+                        <td>                          
+                          <span class="action-icon" (click)="onDeleteDocument(item)">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                              <path d="M0 0h24v24H0V0z" fill="none" />
+                              <path
+                                d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                            </svg>
+                          </span>
+                        </td>
+                      </tr>                      
+                    </tbody>                    
+                  </table>                   
+                </div>                      
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>              
+  </div>
+
+  <div class="main-container m-4" *ngIf="!UserView && !ShowBulkDocumentUpload && !BulkUploadStepNavigation">
+    <div class="tab-menu mb-4">
+      <div class="deal-content">
+        <div class="deal-highlight-content d-flex justify-content-between">
+          <div class="highlights pt-0 ">
+            <h3>{{InvestorsHeaderSummary?.totalInvestors | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Total Investors</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{InvestorsHeaderSummary?.totalApprovedAmount | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Total Approved Amount</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{InvestorsHeaderSummary?.totalInvestments | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Total Investments</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{InvestorsHeaderSummary?.averageInvestment | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Average Investment</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{InvestorsHeaderSummary?.totalReserved | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Total Reserved</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sub-header d-flex align-items-center justify-content-between pb-2">
+      <div>
+        <h3>Investors</h3>
+      </div>
+      <div>
+        <button type="button" class="button-outline" (click)="bulkDocumentUpload()">Bulk Document Upload</button>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col">
+        <div class="table-wrapper mt-4">
+          <div class="table-actions documents-table pl-3 pr-3">
+            <div class="d-flex justify-content-between pt-3">
+              <div class="d-flex justify-content-between pt-3">
+                <div>
+                  <button type="button" class="button-outline mr-3" (click)="onAddTag()" [disabled]="ChooseBool">Add
+                    Tag</button>
+                </div>
+                <div>
+                  <button type="button" class="button-outline mr-3" [disabled]="ChooseBool">Send
+                    Email</button>
+                </div>
+                <div>
+                  <button type="button" class="button-outline" [disabled]="ChooseBool">Account Statement</button>
+                </div>
+              </div>
+              <div>
+                <input type="text" class="input-field deal-search" placeholder="Search" (input)="FilterLead($event)">
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col d-flex align-items-center pl-0">
+                <div class="mr-2 mb-3">
+                  <label for="" class="mr-2"> Show:</label>
+                  <select name="" id="" style="width:100px" (change)="onChooseDataPerPage($event)">
+                    <option value="0" selected>Select</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                </div>
+                <div class="mr-2 mb-3">
+                  <label for="" class="mr-2"> Tags:</label>
+                  <select name="" id="" style="width:130px" (change)="onChooseTags($event)">
+                    <option *ngFor="let item of TagDetails" [value]="item.id == 'null' ? '': item.id"
+                      [selected]="item.id == TagDetailsId">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div *ngIf="InvestorDetails.length == 0">No Investors Yet...</div>
+          <table class="documents-table" *ngIf="InvestorDetails.length > 0">
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" (change)="SelectAll($event)" [(ngModel)]="SelectAllCheckbox">
+                </th>
+                <th scope="col">Name</th>
+                <th scope="col">Investments</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Investment Capacity</th>
+                <th scope="col">Self Acc</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of InvestorDetails  | paginate: config">
+                <td style="width: 40px;">
+                  <input type="checkbox" (change)="Select(item,$event)" [checked]="item.selected">
+                </td>
+                <td><b><a
+                      (click)="ViewDetails(item)">{{item.fullName}}</a></b><br>{{item.emailId}}<br>{{item.phoneNumber}}
+                </td>
+                <td>{{item.totalInvestments}}</td>
+                <td>{{item.totalAmount}}</td>
+                <td>{{LookingInvest[item.capacity].value}}</td>
+                <td *ngIf="item.isAccreditedInvestor == true">Yes</td>
+                <td *ngIf="item.isAccreditedInvestor == false">No</td>
+                <td *ngIf="item.isAccreditedInvestor == null"></td>
+                <td>
+                  <span class="action-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                      fill="#000000">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
+                    </svg>
+                  </span>
+                  <span class="action-icon" (click)="ViewDetails(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                    </svg>
+                  </span>
+                  <span class="action-icon" (click)="onNotes(item)"><svg xmlns="http://www.w3.org/2000/svg"
+                      height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                    </svg></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <pagination-controls *ngIf="InvestorDetails.length > 0" (pageChange)="pageChanged($event)">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>    
+  <div class="main-container m-4" *ngIf="UserView && !ShowBulkDocumentUpload && !BulkUploadStepNavigation">
+    <div class="header-nav tab-menu p-3 mb-4 d-flex align-items-center justify-content-between">
+      <div>
+       <div class="backbtnimg" (click)="onBack()"> <img class="backimg"  src="../../assets/images/icons/back.svg" ></div>
+        {{UserDetails?.fullName}} <span *ngIf="UserDetails.nickName != null">({{UserDetails?.nickName}})</span>
+      </div>
+      <div>
+        <div>
+          <label>Verify Account</label>
+        </div>
+        <div>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="UserDetails.verifyAccount"
+              (click)="onVerifyAccount(!UserDetails.verifyAccount)">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <div>
+          <label>Verify Accreditation</label>
+        </div>
+        <div>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="UserDetails.isAccreditedInvestor"
+              (click)="onVerifyAccreditation(!UserDetails.isAccreditedInvestor)">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div><button type="button" class="button-outline mr-3" (click)="ResetPassword()">Reset Password</button></div>
+      <div><button type="button" class="button-outline mr-3" (click)="EditProfile()">Edit Profile</button></div>
+      <div><button type="button" class="button-outline mr-3">Login as Investor</button></div>
+      <div><button type="button" class="button-outline mr-3">Account Statement</button></div>
+    </div>
+    <div class="sub-header d-flex align-items-center justify-content-between pb-2">
+      <div class="d-flex align-items-center justify-content-between pb-2">
+        <div>
+          <span class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          {{UserDetails?.emailId}}
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between pb-2">
+        <div>
+          <span class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          {{UserDetails?.phoneNumber}}
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between pb-2">
+        <div>
+          <span class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z" />
+              <circle cx="12" cy="9" r="2.5" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          {{Residency[UserDetails.residency].name}}
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between pb-2">
+        <div>
+          <span class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          {{LookingInvest[UserDetails.capacity].value}}
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between pb-2">
+        <div>
+          <span class="action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          Friend
+        </div>
+      </div>
+    </div>
+    <div class="tab-menu mb-4">
+      <div class="deal-content pt-0">
+        <div class="deal-highlight-content d-flex justify-content-between">
+          <div class="highlights pt-0 ">
+            <h3>{{this.InvestorHeaderSummary?.totalInvested | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Total Invested</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{this.InvestorHeaderSummary.totalInvestments }}</h3>
+            <p>Investments</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{this.InvestorHeaderSummary.pendingInvestments }}</h3>
+            <p>Pending Investments</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3>{{this.InvestorHeaderSummary?.totalReserved | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+            <p>Total Reserved</p>
+          </div>
+          <div class="highlights pt-0">
+            <h3 *ngIf="UserDetails.lastLogin != null">{{UserDetails?.lastLogin | date : 'MMM d, y, h:mm a'}}</h3>
+            <h3 *ngIf="UserDetails.lastLogin == null">Invited</h3>
+            <p>Last Login</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col br-right">
+        <div class="header-nav tab-menu pl-0 mb-4">
+          <div class="d-flex align-items-center justify-content-between pb-2">
+            <h3>Reservations</h3>
+            <span (click)="Reservations()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+              </svg>
+            </span>
+          </div>
+          <div *ngIf="ReservationsShow">  
+            <div *ngIf="ReservationData.length > 0">                                            
+              <table class="documents-table" *ngIf="ReservationData.length > 0">                            
+                  <tbody>
+                      <tr *ngFor="let item of ReservationData">
+                          <td>
+                            <div class="highlights pt-0">
+                                <h3>{{item.amount | currency:'USD' : 'symbol' : '1.0-0'}}
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.confidenceLevel == 1"
+                                  class="color-grey">Very likely</span>
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.confidenceLevel == 2"
+                                  class="color-grey">Likely</span>                                                                                                   
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.confidenceLevel == 3"
+                                  class="color-grey">Unlikely</span>
+                                  <span class="request-date ml-3 justify-content-between"></span>                                                                                                                                                                  
+                                  <span class="action-icon" (click)="onEditReservation(item)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                                      <path d="M0 0h24v24H0V0z" fill="none" />
+                                      <path
+                                        d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                                    </svg>
+                                  </span>
+                                </h3>                                                                                                                                                                                                                                                                                                                                                                                                          
+                            </div>                                                                                                                                                                  
+                            <label><b>Profile Name: </b>{{item.profileName}}</label><br/>
+                            <label><b>Profile Type: </b>{{item.profileTypeName}}</label><br/>
+                            <label><b>Reservation: </b>{{item.reservationName}}</label>                                                        
+                          </td>                                                                                                                                                                                
+                      </tr>                                                                                                                                     
+                  </tbody>                                  
+              </table> 
+              <div class="text-center mt-5">
+                <button class="button-outline mr-3"  (click)="onAddReservation()">Add Reservation</button>                      
+              </div>  
+              <br/>           
+            </div>            
+            <ng-template #elseBlock>
+              <div>No Reservations Yet...</div>
+            </ng-template>                                                               
+          </div>
+        </div>
+        <div class="header-nav tab-menu pl-0 mb-4">
+          <div class="d-flex align-items-center justify-content-between pb-2">
+            <h3>Investments</h3>
+            <span (click)="Investments()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+              </svg>
+            </span>
+          </div>
+          <div *ngIf="InvestmentsShow">
+            <div *ngIf="InvestmentData.length > 0">                                            
+              <table class="documents-table" *ngIf="InvestmentData.length > 0">                            
+                  <tbody>
+                      <tr *ngFor="let item of InvestmentData">
+                          <td>
+                            <div class="highlights pt-0">
+                                <h3>{{item.amount | currency:'USD' : 'symbol' : '1.0-0'}}
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between"></span>                                  
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.status == 1"
+                                  class="color-grey">Approved</span>
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.status == 2"
+                                  class="color-grey">Pending</span>
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.status == 5"
+                                  class="color-grey">Waitlisted</span>                                  
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.status == 6"
+                                  class="color-grey">Declined</span>
+                                  <span class="request-date ml-3 justify-content-between" *ngIf="item.status == 7"
+                                  class="color-grey">Ownership Sold</span>
+                                  <span class="request-date ml-3 justify-content-between"></span>                                                                                                                                
+                                  <span class="action-icon" (click)="onEditInvestment(item)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                                      <path d="M0 0h24v24H0V0z" fill="none" />
+                                      <path
+                                        d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                                    </svg>
+                                  </span>
+                                </h3>                                                                                                                                                                                                                                                                                                                                                                                                          
+                            </div>                                                                                                                                                                  
+                            <label><b>Profile Name: </b>{{item.profileName}}</label><br/>
+                            <label><b>Profile Type: </b>{{item.profileTypeName}}</label><br/>
+                            <label><b>Offering: </b>{{item.offeringName}}</label>                                                        
+                          </td>                                                                                                                                                                                
+                      </tr>                                                                                                                                     
+                  </tbody>                                  
+              </table> 
+              <div class="text-center mt-5">
+                <button class="button-outline mr-3"  (click)="onAddInvestment()">Add Investment</button>                      
+              </div> 
+              <br/>            
+            </div>            
+            <ng-template #elseBlock>
+              <div>No Investments Yet...</div>
+            </ng-template>                     
+          </div>
+        </div>
+        <div class="header-nav tab-menu pl-0 mb-4">
+          <div class="d-flex align-items-center justify-content-between pb-2">
+            <h3>Profiles</h3>
+            <span (click)="Profiles()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+              </svg>
+            </span>
+          </div>
+          <div *ngIf="ProfileShow">                                                     
+              <table class="documents-table">                            
+                  <tbody *ngFor="let item of InvestorProfileDetail">
+                      <tr>
+                          <td>
+                            <label><b>Profile Name: </b>  
+                              {{item.profileName}}
+                              <span class="request-date ml-3 justify-content-between"></span>                                                                                              
+                              <span class="action-icon justify-content-between" (click)="OnViewProfile(item)">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                  <path d="M0 0h24v24H0V0z" fill="none" />
+                                  <path
+                                    d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                                </svg>
+                              </span>
+                            </label><br/>
+                            <label><b>Profile Type: </b>{{item.typeName}}</label><br/> 
+                            <div *ngIf="item.showProfileDetail">
+                              <table class="documents-table">                            
+                                <tbody>
+                                  <tr>
+                                    <td *ngIf="item.type == 1">                                    
+                                      <label><b>Profile Id: </b>{{item.profileDisplayId}}</label><br/>
+                                      <label><b>Address: </b>{{item.address}} </label><br/>
+                                      <label><b>City: </b>{{item.city}}</label><br/>
+                                      <label *ngIf="item.country != null"><b>Country: </b>{{item.country}}<br/></label>
+                                      <label><b>State: </b></label>{{item.state}}<br/>
+                                      <label><b>Zip Code: </b>{{item.zipCode}}</label><br/>
+                                      <label><b>Tax Id: </b>{{item.taxId}}</label><br/> 
+                                      <br/>                                     
+                                      <h3>Distributions</h3>                                                                        
+                                      <label><b>Payment Method: </b>
+                                        <span>{{item.distributionTypeId == 0?'-':item.paymentMethod}}</span>                                                                                                          
+                                      </label><br/>    
+                                      <div *ngIf="item.distributionTypeId == 1">
+                                        <label><b>Bank Name: </b>                                  
+                                          <span>{{item.bankName == null?'-':item.bankName}}</span>
+                                        </label><br/>      
+                                        <label><b>Account Type: </b>                                       
+                                          <span>{{item.bankAccountType == null?'-':item.bankAccountType}}</span>
+                                          </label><br/>                                     
+                                          <label><b>Routing: </b>                                     
+                                          <span>{{item.bankRoutingNumber == null?'-':item.bankRoutingNumber}}</span>
+                                        </label><br/>                                  
+                                        <label><b>Account Number: </b>
+                                          <span>{{item.bankAccountNumber == null?'-':item.bankAccountNumber}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 2">
+                                        <label><b>In Care Of: </b>                                  
+                                          <span>{{item.checkIncareOf == null?'-':item.checkIncareOf}}</span>
+                                        </label><br/>      
+                                        <label><b>Address: </b>                                       
+                                          <span>{{item.checkAddress == null?'-':item.checkAddress}}</span>
+                                          </label><br/>                                     
+                                          <label><b>City: </b>                                     
+                                          <span>{{item.checkCity == null?'-':item.checkCity}}</span>
+                                        </label><br/>                                  
+                                        <label><b>State: </b>
+                                          <span>{{item.checkState == null?'-':item.checkState}}</span> 
+                                        </label><br/>
+                                        <label><b>Zip Code: </b>
+                                          <span>{{item.checkZip == null?'-':item.checkZip}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 3">
+                                        <label><b>Details: </b>                                  
+                                          <span>{{item.otherDetails == null?'-':item.otherDetails}}</span>
+                                        </label>                                               
+                                      </div>
+                                      <div class="text-center mt-5">
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnCancelProfile(item)">Cancel</button> 
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnEditProfile(item)">Edit Profile</button>                                                                                                                                                                               
+                                      </div>    
+                                    </td>  
+                                    <td *ngIf="item.type == 2">                                                                                                            
+                                      <label><b>Profile Id: </b>{{item.profileDisplayId}}</label><br/>
+                                      <label><b>Address: </b>{{item.address}} </label><br/>
+                                      <label><b>City: </b>{{item.city}}</label><br/>
+                                      <label *ngIf="item.country != null"><b>Country: </b>{{item.country}}<br/></label>                                      
+                                      <label><b>State: </b></label>{{item.state}}<br/>
+                                      <label><b>Zip Code: </b>{{item.zipCode}}</label><br/>
+                                      <label><b>Tax Id: </b>{{item.taxId}}</label><br/>
+                                      <label><b>Disregarded Entity: </b>
+                                        {{item.isDisregardedEntity == null? '-':(item.isDisregardedEntity == true?'Yes':'No')}}</label><br/>                                    
+                                      <label><b>Tax Id of Owner: </b>{{item.taxIdofOwner}}</label><br/>
+                                      <label><b>IRA LLC: </b>
+                                        {{item.isIRALLC == null? '-':(item.isIRALLC == true?'Yes':'No')}}</label><br/>                                    
+                                      <label *ngIf="item.taxIdofOwner != null"><b>Tax ID of Owner: </b>{{item.taxIdofOwner}}</label><br/>
+                                      <br/>
+                                      <h3>Distributions</h3>                                                                        
+                                      <label><b>Payment Method: </b> 
+                                        <span>{{item.distributionTypeId == 0?'-':item.paymentMethod}}</span>                                                                                                         
+                                      </label><br/>    
+                                      <div *ngIf="item.distributionTypeId == 1">
+                                        <label><b>Bank Name: </b>                                  
+                                          <span>{{item.bankName == null?'-':item.bankName}}</span>
+                                        </label><br/>      
+                                        <label><b>Account Type: </b>                                       
+                                          <span>{{item.bankAccountType == null?'-':item.bankAccountType}}</span>
+                                          </label><br/>                                     
+                                          <label><b>Routing: </b>                                     
+                                          <span>{{item.bankRoutingNumber == null?'-':item.bankRoutingNumber}}</span>
+                                        </label><br/>                                  
+                                        <label><b>Account Number: </b>
+                                          <span>{{item.bankAccountNumber == null?'-':item.bankAccountNumber}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 2">
+                                        <label><b>In Care Of: </b>                                  
+                                          <span>{{item.checkIncareOf == null?'-':item.checkIncareOf}}</span>
+                                        </label><br/>      
+                                        <label><b>Address: </b>                                       
+                                          <span>{{item.checkAddress == null?'-':item.checkAddress}}</span>
+                                          </label><br/>                                     
+                                          <label><b>City: </b>                                     
+                                          <span>{{item.checkCity == null?'-':item.checkCity}}</span>
+                                        </label><br/>                                  
+                                        <label><b>State: </b>
+                                          <span>{{item.checkState == null?'-':item.checkState}}</span> 
+                                        </label><br/>
+                                        <label><b>Zip Code: </b>
+                                          <span>{{item.checkZip == null?'-':item.checkZip}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 3">
+                                        <label><b>Details: </b>                                  
+                                          <span>{{item.otherDetails == null?'-':item.otherDetails}}</span>
+                                        </label>                                               
+                                      </div> 
+                                      <div class="text-center mt-5">
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnCancelProfile(item)">Cancel</button> 
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnEditProfile(item)">Edit Profile</button>                                                                                                                                                                               
+                                      </div>                                        
+                                    </td>      
+                                    <td *ngIf="item.type == 3">                                    
+                                      <label><b>Profile Id: </b>{{item.profileDisplayId}}</label><br/>
+                                      <label><b>Address: </b>{{item.address}} </label><br/>
+                                      <label><b>City: </b>{{item.city}}</label><br/>
+                                      <label *ngIf="item.country != null"><b>Country: </b>{{item.country}}<br/></label>
+                                      <label><b>State: </b></label>{{item.state}}<br/>
+                                      <label><b>Zip Code: </b>{{item.zipCode}}</label><br/>
+                                      <label><b>Tax Id: </b>{{item.taxId}}</label><br/>                                      
+                                      <br/>
+                                      <h3>Distributions</h3>                                                                        
+                                      <label><b>Payment Method: </b>                                                                           
+                                        <span>{{item.distributionTypeId == 0?'-':item.paymentMethod}}</span>
+                                      </label><br/>    
+                                      <div *ngIf="item.distributionTypeId == 1">
+                                        <label><b>Bank Name: </b>                                  
+                                          <span>{{item.bankName == null?'-':item.bankName}}</span>
+                                        </label><br/>      
+                                        <label><b>Account Type: </b>                                       
+                                          <span>{{item.bankAccountType == null?'-':item.bankAccountType}}</span>
+                                          </label><br/>                                     
+                                          <label><b>Routing: </b>                                     
+                                          <span>{{item.bankRoutingNumber == null?'-':item.bankRoutingNumber}}</span>
+                                        </label><br/>                                  
+                                        <label><b>Account Number: </b>
+                                          <span>{{item.bankAccountNumber == null?'-':item.bankAccountNumber}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 2">
+                                        <label><b>In Care Of: </b>                                  
+                                          <span>{{item.checkIncareOf == null?'-':item.checkIncareOf}}</span>
+                                        </label><br/>      
+                                        <label><b>Address: </b>                                       
+                                          <span>{{item.checkAddress == null?'-':item.checkAddress}}</span>
+                                          </label><br/>                                     
+                                          <label><b>City: </b>                                     
+                                          <span>{{item.checkCity == null?'-':item.checkCity}}</span>
+                                        </label><br/>                                  
+                                        <label><b>State: </b>
+                                          <span>{{item.checkState == null?'-':item.checkState}}</span> 
+                                        </label><br/>
+                                        <label><b>Zip Code: </b>
+                                          <span>{{item.checkZip == null?'-':item.checkZip}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 3">
+                                        <label><b>Details: </b>                                  
+                                          <span>{{item.otherDetails == null?'-':item.otherDetails}}</span>
+                                        </label>                                               
+                                      </div> 
+                                      <div class="text-center mt-5">
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnCancelProfile(item)">Cancel</button> 
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnEditProfile(item)">Edit Profile</button>                                                                                                                                                                               
+                                      </div>   
+                                    </td>  
+                                    <td *ngIf="item.type == 4">                                    
+                                      <label><b>Profile Id: </b>{{item.profileDisplayId}}</label><br/>
+                                      <label><b>Address: </b>{{item.address}} </label><br/>
+                                      <label><b>City: </b>{{item.city}}</label><br/>
+                                      <label *ngIf="item.country != null"><b>Country: </b>{{item.country}}<br/></label>
+                                      <label><b>State: </b></label>{{item.state}}<br/>
+                                      <label><b>Zip Code: </b>{{item.zipCode}}</label><br/>
+                                      <label><b>Tax Id: </b>{{item.taxId}}</label><br/>                                      
+                                      <br/>
+                                      <h3>Distributions</h3>                                                                        
+                                      <label><b>Payment Method: </b>                                                                           
+                                        <span>{{item.distributionTypeId == 0?'-':item.paymentMethod}}</span>
+                                      </label><br/>    
+                                      <div *ngIf="item.distributionTypeId == 1">
+                                        <label><b>Bank Name: </b>                                  
+                                          <span>{{item.bankName == null?'-':item.bankName}}</span>
+                                        </label><br/>      
+                                        <label><b>Account Type: </b>                                       
+                                          <span>{{item.bankAccountType == null?'-':item.bankAccountType}}</span>
+                                          </label><br/>                                     
+                                          <label><b>Routing: </b>                                     
+                                          <span>{{item.bankRoutingNumber == null?'-':item.bankRoutingNumber}}</span>
+                                        </label><br/>                                  
+                                        <label><b>Account Number: </b>
+                                          <span>{{item.bankAccountNumber == null?'-':item.bankAccountNumber}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 2">
+                                        <label><b>In Care Of: </b>                                  
+                                          <span>{{item.checkIncareOf == null?'-':item.checkIncareOf}}</span>
+                                        </label><br/>      
+                                        <label><b>Address: </b>                                       
+                                          <span>{{item.checkAddress == null?'-':item.checkAddress}}</span>
+                                          </label><br/>                                     
+                                          <label><b>City: </b>                                     
+                                          <span>{{item.checkCity == null?'-':item.checkCity}}</span>
+                                        </label><br/>                                  
+                                        <label><b>State: </b>
+                                          <span>{{item.checkState == null?'-':item.checkState}}</span> 
+                                        </label><br/>
+                                        <label><b>Zip Code: </b>
+                                          <span>{{item.checkZip == null?'-':item.checkZip}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 3">
+                                        <label><b>Details: </b>                                  
+                                          <span>{{item.otherDetails == null?'-':item.otherDetails}}</span>
+                                        </label>                                               
+                                      </div>
+                                      <div class="text-center mt-5">
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnCancelProfile(item)">Cancel</button> 
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnEditProfile(item)">Edit Profile</button>                                                                                                                                                                               
+                                      </div>  
+                                    </td>  
+                                    <td *ngIf="item.type == 5">                                    
+                                      <label><b>Profile Id: </b>{{item.profileDisplayId}}</label><br/>
+                                      <label><b>Investors: </b></label><br/>
+                                      <table class="documents-table" *ngIf="InvestorsData.length > 0">
+                                        <tbody>                                         
+                                          <tr *ngFor="let investor of InvestorsData">
+                                            <td>                                             
+                                              <label><b>Name: </b>{{investor.firstName + " " + investor.lastName}}</label>
+                                              <br/>
+                                              <label><b>Email: </b>{{investor.emailId}}</label><br/>
+                                              <label><b>Phone: </b>{{investor.phone}}</label><br/>
+                                              </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>                                                                              
+                                      <br/>                                                                       
+                                      <h3>Distributions</h3>                                                                        
+                                      <label><b>Payment Method: </b>                                                                           
+                                        <span>{{item.distributionTypeId == 0?'-':item.paymentMethod}}</span>
+                                      </label><br/>    
+                                      <div *ngIf="item.distributionTypeId == 1">
+                                        <label><b>Bank Name: </b>                                  
+                                          <span>{{item.bankName == null?'-':item.bankName}}</span>
+                                        </label><br/>      
+                                        <label><b>Account Type: </b>                                       
+                                          <span>{{item.bankAccountType == null?'-':item.bankAccountType}}</span>
+                                          </label><br/>                                     
+                                          <label><b>Routing: </b>                                     
+                                          <span>{{item.bankRoutingNumber == null?'-':item.bankRoutingNumber}}</span>
+                                        </label><br/>                                  
+                                        <label><b>Account Number: </b>
+                                          <span>{{item.bankAccountNumber == null?'-':item.bankAccountNumber}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 2">
+                                        <label><b>In Care Of: </b>                                  
+                                          <span>{{item.checkIncareOf == null?'-':item.checkIncareOf}}</span>
+                                        </label><br/>      
+                                        <label><b>Address: </b>                                       
+                                          <span>{{item.checkAddress == null?'-':item.checkAddress}}</span>
+                                          </label><br/>                                     
+                                          <label><b>City: </b>                                     
+                                          <span>{{item.checkCity == null?'-':item.checkCity}}</span>
+                                        </label><br/>                                  
+                                        <label><b>State: </b>
+                                          <span>{{item.checkState == null?'-':item.checkState}}</span> 
+                                        </label><br/>
+                                        <label><b>Zip Code: </b>
+                                          <span>{{item.checkZip == null?'-':item.checkZip}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 3">
+                                        <label><b>Details: </b>                                  
+                                          <span>{{item.otherDetails == null?'-':item.otherDetails}}</span>
+                                        </label>                                               
+                                      </div>  
+                                      <div class="text-center mt-5">
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnCancelProfile(item)">Cancel</button> 
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnEditProfile(item)">Edit Profile</button>                                                                                                                                                                               
+                                      </div> 
+                                    </td>
+                                    <td *ngIf="item.type == 6">                                    
+                                      <label><b>Profile Id: </b>{{item.profileDisplayId}}</label><br/>
+                                      <label><b>Address: </b>{{item.address}} </label><br/>
+                                      <label><b>City: </b>{{item.city}}</label><br/>
+                                      <label *ngIf="item.country != null"><b>Country: </b>{{item.country}}<br/></label>
+                                      <label><b>State: </b></label>{{item.state}}<br/>
+                                      <label><b>Zip Code: </b>{{item.zipCode}}</label><br/>
+                                      <label><b>Tax Id: </b>{{item.taxId}}</label><br/>  
+                                      <br/>                                    
+                                      <h3>Distributions</h3>                                                                        
+                                      <label><b>Payment Method: </b>                                                                           
+                                        <span>{{item.distributionTypeId == 0?'-':item.paymentMethod}}</span>
+                                      </label><br/>    
+                                      <div *ngIf="item.distributionTypeId == 1">
+                                        <label><b>Bank Name: </b>                                  
+                                          <span>{{item.bankName == null?'-':item.bankName}}</span>
+                                        </label><br/>      
+                                        <label><b>Account Type: </b>                                       
+                                          <span>{{item.bankAccountType == null?'-':item.bankAccountType}}</span>
+                                          </label><br/>                                     
+                                          <label><b>Routing: </b>                                     
+                                          <span>{{item.bankRoutingNumber == null?'-':item.bankRoutingNumber}}</span>
+                                        </label><br/>                                  
+                                        <label><b>Account Number: </b>
+                                          <span>{{item.bankAccountNumber == null?'-':item.bankAccountNumber}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 2">
+                                        <label><b>In Care Of: </b>                                  
+                                          <span>{{item.checkIncareOf == null?'-':item.checkIncareOf}}</span>
+                                        </label><br/>      
+                                        <label><b>Address: </b>                                       
+                                          <span>{{item.checkAddress == null?'-':item.checkAddress}}</span>
+                                          </label><br/>                                     
+                                          <label><b>City: </b>                                     
+                                          <span>{{item.checkCity == null?'-':item.checkCity}}</span>
+                                        </label><br/>                                  
+                                        <label><b>State: </b>
+                                          <span>{{item.checkState == null?'-':item.checkState}}</span> 
+                                        </label><br/>
+                                        <label><b>Zip Code: </b>
+                                          <span>{{item.checkZip == null?'-':item.checkZip}}</span> 
+                                        </label>
+                                      </div>
+                                      <div *ngIf="item.distributionTypeId == 3">
+                                        <label><b>Details: </b>                                  
+                                          <span>{{item.otherDetails == null?'-':item.otherDetails}}</span>
+                                        </label>                                               
+                                      </div> 
+                                      <div class="text-center mt-5">
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnCancelProfile(item)">Cancel</button> 
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <span class="request-date ml-3 justify-content-between"></span>
+                                        <button class="button-outline mr-3" type="button" class="button" (click)="OnEditProfile(item)">Edit Profile</button>                                                                                                                                                                               
+                                      </div>                                        
+                                    </td>                                                                                                                                                                               
+                                </tr>  
+                                <tr>                                   
+                                </tr>                                                                                                                                   
+                                </tbody>
+                                </table>                                                                  
+                              </div>                                                                                                               
+                          </td>                                                                                                                                                                 
+                      </tr>                                                                                                                                     
+                  </tbody>                                   
+              </table>   
+              <div *ngIf="InvestorProfileDetail.length>0" class="text-center mt-5">
+                <button class="button-outline mr-3"  (click)="OnAddNewProfile()">Add Profile</button>                      
+              </div> 
+              <br/>                        
+          </div>                    
+        </div>
+        <div class="header-nav tab-menu pl-0 mb-4">
+          <div class="d-flex align-items-center justify-content-between pb-2">
+            <h3>Additional User</h3>
+            <span (click)="AdditionalUser()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+              </svg>
+            </span>
+          </div>
+          <div *ngIf="AdditionalUserShow">  
+            <div *ngIf="AccountAccesstoOther.length > 0">                                            
+              <table class="documents-table" *ngIf="AccountAccesstoOther.length > 0">                            
+                  <tbody>
+                      <tr *ngFor="let item of AccountAccesstoOther">
+                          <td>
+                            <label><b>Name: </b>{{item.firstName}} {{item.lastName}}</label>
+                            <br/>
+                            <label *ngIf="item.permission == 0"></label>
+                            <label *ngIf="item.permission == 1"><b>Granted Access: </b>View Only</label>
+                            <label *ngIf="item.permission == 2"><b>Granted Access: </b>View and Edit</label>
+                          </td>                                                                                                  
+                      </tr>                                 
+                  </tbody>
+              </table>
+            </div>   
+            <ng-template #elseBlock>
+              <div>No Users Yet...</div>
+            </ng-template>                                                                        
+          </div>
+        </div>
+        <!--<div class="header-nav tab-menu pl-0 mb-4">
+          <div class="d-flex align-items-center justify-content-between pb-2">
+            Archive
+            <span (click)="Archive()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+              </svg>
+            </span>
+          </div>
+          <div *ngIf="ArchiveShow">Archive</div>
+        </div>-->
+      </div>
+      <div class="col">
+        <div class="header-nav tab-menu pl-0 mb-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="nav-right">
+              <ul class="d-flex pl-0">
+                <li class="nav-link" [ngClass]="{active: Selected == 'InvestorActivity'}" (click)="Activity()">Activity
+                </li>
+                <li class="nav-link" [ngClass]="{active: Selected == 'InvestorNotes'}" (click)="Notes()">Notes</li>
+                <li class="nav-link" [ngClass]="{active: Selected == 'InvestorEmail'}" (click)="Email()">Email</li>
+                <li class="nav-link" [ngClass]="{active: Selected == 'InvestorDocs'}" (click)="Docs()">Docs</li>
+                <li class="nav-link" [ngClass]="{active: Selected == 'InvestorDistributions'}"
+                  (click)="Distrubutions()">Distrubutions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="ActivityShow">
+          <div *ngFor="let item of Notification">
+            <span *ngIf="item.monthDifference > 0">{{item.monthDifference}} month ago on {{item.createdOn | date : 'MMM
+              d, y, h:mm a'}}</span>
+            <span *ngIf="item.monthDifference == 0">{{item.daysDifference}} days ago on {{item.createdOn | date : 'MMM
+              d, y, h:mm a'}}</span><br>
+            <span>{{item.message}}</span><br>
+            <span>
+              <img *ngIf="item.createdByProfileImageURL == null" class="mr-3" src="../../assets/images/user-icon.png"
+                alt="" width="24" height="24">
+              <img *ngIf="item.createdByProfileImageURL != null" class="mr-3" src="item.createdByProfileImageURL" alt=""
+                width="24" height="24">
+              Added by {{item.createdBy}}</span><br>
+          </div>
+          <div class="text-center mt-4" *ngIf="Notification.length != 0">
+            <button type="button" class="button" (click)="onLoadMore()">Load More</button>
+          </div>
+        </div>
+        <div *ngIf="NotesShow">
+          <div class="mt-3 text-center">
+            <h3>Notes</h3>
+            <textarea [(ngModel)]="InvestorNotes" class="input-field" rows="2"
+              placeholder="Write a note here"></textarea>
+            <button class="button mr-3" (click)="OnCancelNotes()">Cancel</button>
+            <button class="button-outline mr-3" (click)="InvestorSaveNotes()">Save</button>
+          </div>
+          <div *ngIf="!InvestorEditNote">
+            <div *ngFor="let item of InvestorData">
+              <td>{{item.createdOn | date : 'MMM d, y, h:mm a'}}</td><br>
+              <td>{{item.notes}}</td><br>
+              <td>Added by {{item.createdBy}}
+                <span class="action-icon" (click)="EditNoteInvestor(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="DeleteNote(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </div>
+          </div>
+          <div class="mt-3 text-center" *ngIf="InvestorEditNote">
+            <textarea [(ngModel)]="UpdateInvestorNotes" class="input-field" rows="2"></textarea>
+            <button class="button mr-3" (click)="InvestorEditNote = false">Cancel</button>
+            <button class="button-outline mr-3" (click)="InvestorUpdateNote()">Update</button>
+          </div>
+        </div>
+        <div *ngIf="EmailShow">Email</div>
+        <div *ngIf="DocsShow">
+          <table class="documents-table">
+            <thead>
+              <tr>
+                <th>Doc Details</th>
+                <th>Doc Type</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of DocumentData">
+                <td>
+                  <b>{{item.name}}</b><br>
+                  {{item.createdOn | date}}<br>
+                  <b>Offering name:</b> {{item.offeringName}}
+                </td>
+                <td>
+                  <span *ngIf="item.type == 1">Tax Documents</span>
+                  <span *ngIf="item.type == 2">Subscriptions</span>
+                  <span *ngIf="item.type == 3">Accreditation</span>
+                  <span *ngIf="item.type == 4">Offering Documents</span>
+                  <span *ngIf="item.type == 5">Miscellaneous</span>
+                  <span *ngIf="item.type == 6">Updates</span>
+                </td>
+                <td>
+                  <span class="action-icon" (click)="onDownloadFile(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path d="M13 5v6h1.17L12 13.17 9.83 11H11V5h2m2-2H9v6H5l7 7 7-7h-4V3zm4 15H5v2h14v-2z" />
+                    </svg> </span>
+                  <span class="action-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                    </svg>
+                  </span>
+                  <span class="action-icon" (click)="onViewFile(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                    </svg>
+                  </span>
+                  <span class="action-icon" (click)="OnDelete(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                      fill="#000000">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                    </svg>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5" style="text-align: right important">
+                  <button type="submit" class=" button-outline mr-3">Upload Document</button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div *ngIf="DistributionsShow">
+          <div class="header-nav tab-menu pl-0 mb-4 row">
+            <div class="nav-right">
+              <div class="col">
+                Group By:
+                <select>Date</select>
+              </div>
+              <div class="col">
+                Total Distribution : {{DistributionAmount | currency:'USD' : 'symbol' : '1.0-0'}}
+              </div>
+            </div>
+          </div>
+          <table class="documents-table">
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th>Offering Name</th>
+                <th>Amount</th>
+                <th>Profile Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of DistributionData">
+                <td>{{item.receivedDate | date}}</td>
+                <td>{{item.offeringName}}</td>
+                <td>{{item.amountInvested | currency:'USD' : 'symbol' : '1.0-0'}}</td>
+                <td>{{item.userProfileType}}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5" style="text-align: right important">
+                  <button type="submit" class=" button-outline mr-3">Export as Excel</button>
+                  <button type="submit" class=" button-outline mr-3">Download as PDF</button>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>  
+  <div class="modal-wrapper" *ngIf="AddTagPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Add Tag</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="AddTagPopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;">
+          <label>Tag Name</label>
+          <input list="browsers" id="browser" class="input-field" [(ngModel)]="TagName">
+          <datalist id="browsers">
+            <select name="" id="">
+              <option *ngFor="let item of TagDetails" [selected]="item.id == TagDetailsId">
+                <span *ngIf="item.id != 0">{{ item.name }}</span>
+              </option>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+              </svg>
+            </select>
+          </datalist>
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button type="button" class="button mr-3" (click)="AddTagPopup=false"><span>Cancel</span></button>
+          <button class="button-outline" (click)="onSaveTag()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="NotePopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Add Notes</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="NotePopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <table class="documents-table" *ngIf="TableView">
+          <thead>
+            <tr>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of InvestorData">
+              <td>{{item.notes}}</td>
+              <td>
+                <span class="action-icon" (click)="EditNote(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="DeleteNote(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="WriteNoteBool" class="mt-3 text-center">
+          <textarea [(ngModel)]="InvestorNotes" class="input-field" rows="2" placeholder="Write a note here"></textarea>
+          <button class="button mr-3" (click)="OnCancel()">Cancel</button>
+          <button class="button-outline mr-3" *ngIf="!EditBool" (click)="NoteSave()">Save</button>
+          <button class="button-outline" *ngIf="EditBool" (click)="NoteSave()">Update</button>
+        </div>
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;"
+          *ngIf="InvestorData.length == 0 && InvestorEmpty">
+          No Notes Avalible!
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button class="button-outline mr-3" (click)="onWriteANote()">Write a note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="EditProfilePopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-3">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h2>Edit Profile</h2>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="EditProfilePopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="modal-content pt-0">
+          <form [formGroup]="EditProfileForm">
+            <div class="row mt-4">
+              <div class="col">
+                <span class="label color-primary-tint">First Name<span class="validation-msg"> *</span></span>
+                <input type="text" class="input-field" placeholder="Enter the First Name" formControlName="FirstName"
+                  (blur)="onFirstName()">
+                <div *ngIf="FirstnameError" class="validation-msg">
+                  <span>First Name is required</span>
+                </div>
+              </div>
+              <div class="col">
+                <span class="label color-primary-tint">Last Name<span class="validation-msg"> *</span></span>
+                <input type="text" class="input-field" placeholder="Enter the Last Name" formControlName="LastName"
+                  (blur)="onLastName()">
+                <div *ngIf="LastnameError" class="validation-msg">
+                  <span>Last Name is required</span>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <span class="label color-primary-tint">Nickname</span>
+                <input type="text" class="input-field" formControlName="NickName" placeholder="Enter the Nickname">
+              </div>
+
+              <div class="col">
+                <span class="label color-primary-tint">Email<span class="validation-msg"> *</span></span>
+                <input type="text" class="input-field" formControlName="Email" placeholder="Enter the Email"
+                  (blur)="onEmail()">
+                <div *ngIf="AddEmailError || validEmail" class="validation-msg">
+                  <span *ngIf="AddEmailError">Email is required</span>
+                  <span *ngIf="validEmail">Invalid Email</span>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="phonenumber" class="">Phone Number</label>
+                <input type="phonenumber" class="input-field" placeholder="Enter the Phone Number" id="phonenumber"
+                  formControlName="Phonenumber" minlength="10" maxlength="10" (keypress)="numberValidation($event)">
+              </div>
+              <div class="col">
+                <label for="residency" class="">Residency</label>
+                <select class="input-field" id="province" name="province" (change)="onchange($event)"
+                  formControlName="Residency" [(ngModel)]="ResidencyId">
+                  <option *ngFor="let item of Residency" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == ResidencyId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-4" *ngIf="CountryShow">
+              <div class="col pl-0">
+                <div class="field-group">
+                  <label for="country" class="">Country</label>
+                  <input type="text" class="input-field" placeholder="Enter the Country" id="country"
+                    formControlName="Country">
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="residency" class="">Investment Capacity?</label>
+                <select class="input-field" id="invest" name="invest" formControlName="Invest"
+                  [(ngModel)]="LookingInvestId">
+                  <option *ngFor="let item of LookingInvest" [value]="item.id" [selected]="item.id == LookingInvestId">
+                    {{ item.value }}
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center">
+                  <label>Self Accreditation?</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      Self Accreditation is how they responded at registration when they were asked if they were
+                      accredited.
+                    </div>
+                  </div>
+                </div>
+                <select class="input-field" id="creditedinvestor" name="creditedinvestor" (change)="oninvestor($event)"
+                  formControlName="Creditedinvestor" [(ngModel)]="AccreditedInvestorId">
+                  <option *ngFor="let item of AccreditedInvestor" [value]="item.id"
+                    [selected]="item.id == AccreditedInvestorId">
+                    {{ item.value }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <span class="label color-primary-tint">How did you hear about us?</span>
+                <input type="text" class="input-field" id="firstName" formControlName="HowdidYouHear">
+              </div>
+            </div>
+            <div class="company-wrapper mt-5">
+              <h3>Email Subscriptions</h3>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <div>
+                  <label>Company Newsletter / Updates</label>
+                </div>
+                <div>
+                  <label class="switch">
+                    <input type="checkbox" formControlName="NewletterUpdate">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="col">
+                <div>
+                  <label>New Investment Announcements</label>
+                </div>
+                <div>
+                  <label class="switch">
+                    <input type="checkbox" formControlName="InvestmentAnnoucements">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer bottom-align text-center mt-5">
+              <button class="button mr-3" (click)="EditProfilePopup = false">Cancel</button>
+              <button class="button-outline mr-3" (click)="onUpdateProfile()">Update
+                Profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="UpdatePassword">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-4">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Reset Password</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="UpdatePassword = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="modal-content pt-0">
+            <div class="">
+              <span class="label color-primary-tint">Set New Password</span><br>
+              <div class="field-group">
+                <div class="input-field-group">
+                  <input [type]="showPassword ? 'text' : 'password'" class="input-field" [(ngModel)]="NewPassword"
+                    (keydown.space)="$event.preventDefault();" (change)="onPassword()" placeholder="New Password">
+                  <span class="input-field-btn view-pwd">
+                    <button class="button button-clear icon-only" (click)="Password()" type="button">
+                      <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                        width="20">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                      </svg>
+                      <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                        width="20">
+                        <path d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+                <div class="validation-msg">
+                  <div *ngIf="EmptyPassword">New Password field shouldn’t be empty</div>
+                  <div *ngIf="ValidLowercase">
+                    <br>Password must have one lowercase character.
+                  </div>
+                  <div *ngIf="ValidUppercase">
+                    Password must have one uppercase character.
+                  </div>
+                  <div *ngIf="ValidNumbercase">
+                    Password must have one number.
+                  </div>
+                  <div *ngIf="ValidSpecialcase">
+                    Password must have one special character.
+                  </div>
+                  <div *ngIf="ValidLengthcase">
+                    Password must be at least 12 characters.
+                  </div>
+                  <div *ngIf="MismatchCurrentPassword">
+                    New Password must be different from Current Password
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <span class="label color-primary-tint">Confirm New Password</span><br>
+              <div class="input-field-group">
+                <input [type]="showConfrimPassword ? 'text' : 'password'" class="input-field mt-1"
+                  [(ngModel)]="ConfirmNewPassword" (keydown.space)="$event.preventDefault();"
+                  (change)="onConfirmPassword()" placeholder="Confirm New Password">
+                <span class="input-field-btn view-pwd">
+                  <button class="button button-clear icon-only" (click)="ConfirmPassword()" type="button">
+                    <svg *ngIf="showConfrimPassword" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                      width="20">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                    </svg>
+                    <svg *ngIf="!showConfrimPassword" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                      width="20">
+                      <path d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                    </svg>
+                  </button>
+                </span>
+              </div>
+              <div class="validation-msg">
+                <div *ngIf="EmptyConfirmPassword">Confirm Password field shouldn’t be empty</div>
+                <div *ngIf="ValidConfirmPassword">Passwords must match.</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center mt-2">
+            <button class="button-outline" (click)="onUpdatePassword()">Reset Password</button>
+          </div>
+        </div>
+        <div class="col">
+          <button class="button-outline" (click)="GetResetPasswordLink()">Send Reset Password Link</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="VerifyAccountPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3 *ngIf="verifyuser">Verify Account</h3>
+            <h3 *ngIf="!verifyuser">Unverify Account</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="CancelVerifyAccount()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;">
+          <span *ngIf="verifyuser">Are you sure you want to verify this user?</span>
+          <span *ngIf="!verifyuser">Are you sure you want to unverify this user?</span>
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button type="button" class="button mr-3" (click)="CancelVerifyAccount()"><span>Cancel</span></button>
+          <button class="button-outline" (click)="onSaveVerifyAccount()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="VerifyAccreditPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Accredited Verification</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="CancelAccreditVerifyAccount()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;">
+          <span *ngIf="Accreditverifyuser">Are you sure, you want to Accredited Verify User?</span>
+          <span *ngIf="!Accreditverifyuser">Are you sure, you want to Accredited Unverify User? </span>
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button type="button" class="button mr-3" (click)="CancelAccreditVerifyAccount()"><span>Cancel</span></button>
+          <button class="button-outline" (click)="onSaveVerifyAccreditation()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="DocumentViewPopup">
+    <div class="modal" style="max-width: 1000px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>View Document</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="DocumentViewPopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-content pt-0">
+          <ngx-doc-viewer url="{{ViewFile.filePath}}" viewer="google" style="width:100%;height:93vh;"></ngx-doc-viewer>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="DeleteDocumentPopup">
+    <div class="modal">
+      <div class="modal-title">
+        <h2>Delete Document</h2>
+      </div>
+      <div class="modal-content pt-0">
+        Are you sure you want to delete ?
+      </div>
+      <div class="modal-footer">
+        <button class="button-outline mr-3" (click)="DeleteDocument()">Yes</button>
+        <button type="button" class="button" (click)="DeleteDocumentPopup=false">
+          <span>No</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="AddEditReservationPopup">
+    <div class="modal" style="max-width: 800px; max-height: 800px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <h3>Add/Edit Reservation</h3>          
+          <button class="button icon-only button-clear ml-2" (click)="AddEditReservationPopup = false">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-content" style="max-width:650px;max-height: 800px;overflow:auto;">
+        <div class="">
+          <div class="field-group">  
+            <div class="row mt-4">
+              <div class="col">
+                <label for="investmentamount" class="">Amount*</label>
+                <input type="text" class="input-field" placeholder="Enter Amount Here" [(ngModel)]="InvestmentAmount"
+                  (blur)="onInsAmt($event)">
+                <div *ngIf="InsAmtError" class="validation-msg">
+                  <div *ngIf="InsAmtError">Amount is required</div>                 
+                </div>
+              </div>              
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Select Profile*</label>
+                <select name="" id="" [(ngModel)]="InvestingProfile" (click)="onChooseProfileChange($event)">
+                  <option *ngFor="let item of ProfileValue" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == InvestingProfile">
+                    <span *ngIf="item.name != null">{{ item.name }}</span>
+                    <span *ngIf="item.firstName != null">{{ item.name }}</span>
+                    <span *ngIf="item.trustName != null">{{ item.name }}</span>
+                    <span *ngIf="item.retirementPlanName != null">{{ item.name }}</span>
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Profile is required</div>
+                </div>
+              </div>              
+            </div>   
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Select Confidence Level*</label>
+                <select class="input-field" id="" name="" [(ngModel)]="ConfidenceLevelId"  (click)="onChooseConfidenceLevel($event)">
+                  <option *ngFor="let item of ConfidenceLevel" [value]="item.id"
+                    [selected]="item.id == ConfidenceLevelId">
+                    {{ item.value }}
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Confidence level is required</div>
+                </div>             
+              </div>              
+            </div>   
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Select Reservation*</label>
+                <select  class="input-field" name="" id="" [(ngModel)]="ReservationListId"  (click)="onChooseReservationName($event)">
+                  <option *ngFor="let item of ReservationList" [value]="item.id"
+                    [selected]="item.id == ReservationListId">
+                    {{item.name}}
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Reservation is required</div>
+                </div>
+              </div>              
+            </div>
+             <div class="modal-footer text-center mt-5"  *ngIf="IsAddReservationPopup">
+                <button class="button mr-3" (click) = "OnCancelAddEditReservation()">Cancel</button>
+                <button class="button-outline mr-3" (click) = "onReserve('add')">Save</button>                
+             </div>  
+             <div class="modal-footer text-center mt-5"  *ngIf="IsEditReservationPopup">
+              <button class="button mr-3" (click) = "OnCancelAddEditReservation()">Cancel</button>              
+              <button class="button-outline mr-3" (click) = "onReserve('edit')">Update</button>     
+           </div>          
+          </div>
+        </div>
+      </div>     
+    </div>
+  </div> 
+  <div class="modal-wrapper" *ngIf="AddEditInvestmentPopup">
+    <div class="modal" style="max-width: 800px; max-height: 800px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <h3>Add/Edit Investment</h3>          
+          <button class="button icon-only button-clear ml-2" (click)="AddEditInvestmentPopup = false">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-content" style="max-width:650px;max-height: 1000px;overflow:auto;">
+        <div class="">
+          <div class="field-group"> 
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Select Offering*</label>
+                <select  class="input-field" name="" id="" [(ngModel)]="OfferingListId"  (click)="onChooseOfferingName($event)">
+                  <option *ngFor="let item of OfferingList" [value]="item.id"
+                    [selected]="item.id == OfferingListId">
+                    {{item.name}}
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Offering is required</div>
+                </div>
+              </div>              
+            </div> 
+            <div class="row mt-4">
+              <div class="col">
+                <label for="investmentamount" class="">Amount*</label>
+                <input type="text" class="input-field" placeholder="Enter Amount Here" [(ngModel)]="InvestmentAmount"
+                  (blur)="onInsAmt($event)">
+                <div *ngIf="InsAmtError" class="validation-msg">
+                  <div *ngIf="InsAmtError">Amount is required</div>                 
+                </div>
+              </div>              
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Select Profile*</label>
+                <select name="" id="" [(ngModel)]="InvestingProfile" (click)="onChooseProfileChange($event)">
+                  <option *ngFor="let item of ProfileValue" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == InvestingProfile">
+                    <span *ngIf="item.name != null">{{ item.name }}</span>
+                    <span *ngIf="item.firstName != null">{{ item.name }}</span>
+                    <span *ngIf="item.trustName != null">{{ item.name }}</span>
+                    <span *ngIf="item.retirementPlanName != null">{{ item.name }}</span>
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Profile is required</div>
+                </div>
+              </div>              
+            </div>   
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Select Status*</label>
+                <select class="input-field" id="" name="" [(ngModel)]="InvestmentStatusId"  (click)="onChooseInvestmentStatus($event)">
+                  <option *ngFor="let item of InvestmentStatus" [value]="item.id"
+                    [selected]="item.id == InvestmentStatusId">
+                    {{ item.value }}
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Status is required</div>
+                </div>             
+              </div>              
+            </div>               
+             <div class="modal-footer text-center mt-5"  *ngIf="IsAddInvestmentPopup">
+                <button class="button mr-3" (click) = "OnCancelAddEditInvestment()">Cancel</button>
+                <button class="button-outline mr-3" (click) = "onInvest('add')">Save</button>                
+             </div>  
+             <div class="modal-footer text-center mt-5"  *ngIf="IsEditInvestmentPopup">
+              <button class="button mr-3" (click) = "OnCancelAddEditInvestment()">Cancel</button>              
+              <button class="button-outline mr-3" (click) = "onInvest('edit')">Update</button>     
+           </div>          
+          </div>
+        </div>
+      </div>     
+    </div>
+  </div> 
+
+  <div class="modal-wrapper" *ngIf="BulkDocumentUploadPopUp">
+    <div class="modal" style="max-width:700px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div style="width:100%">
+            <h3>Bulk Document Upload
+              <button style="float: right;" class="button icon-only button-clear ml-2" (click)="BulkDocumentUploadPopUp = false">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                </svg>
+              </button>  
+            </h3>                                              
+          </div>                                                                           
+        </div>        
+        <div class="modal-content pt-3 align-items-center justify-content-between" style="max-width: 800px;max-height: 700px;overflow: auto;">
+
+          <div class="success mt-3">
+            <span class="pr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"
+                fill="#28a745">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+              </svg>
+            </span>
+            <span>You can upload up to 100 documents at a time. Documents will be automatically matched to 
+              investor accounts based upon the email-Id and profile name in the file name of the document. 
+              Therefore, all of the files must share the same file naming convention. 
+              You will review all matches in the next step before publishing.
+              <a  target="_blank" href="https://syndicationprohelp.freshdesk.com/support/solutions/articles/47001172139-how-to-bulk-upload-documents">Learn More</a>
+            </span>
+
+          </div>  
+          <br/>         
+          <table class="align-items-center formtable">
+            <tbody>
+              <tr><td>&nbsp;</td></tr>
+              <tr>                
+                <td>
+                  <div class="m-7 d-flex align-items-center">                                 
+                      <label for="" >Batch Name: <span class="validation-msg">*</span>
+                        <span class="request-date ml-3 justify-content-between"></span>               
+                      </label>             
+                      <div class="tooltip-wrapper tooltip-lg">                
+                        <div class="tooltip-toggle icon-only">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                            <path d="M0,0H18V18H0Z" fill="none" />
+                            <path
+                              d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                          </svg>                                   
+                        </div> 
+                        <div class="tooltip-text">                  
+                          This is for your reference only, investors won’t see this
+                        </div>                            
+                      </div>                        
+                    </div>                                                                                            
+                </td>  
+                <td>
+                  <span class="request-date ml-3 justify-content-between"></span>             
+                  <input class="input-field"  [(ngModel)]="batchName" placeholder="Enter the Batch Name" (blur)="onBatchName()" type="text">
+                  <div *ngIf="batchNameError" class="validation-msg formvalidate">
+                    <span class="request-date ml-3 justify-content-between"></span>  
+                    <span>Batch Name is required</span>
+                  </div>                  
+                </td>             
+              </tr> 
+
+              <tr><td>&nbsp;</td></tr>
+              <tr>
+                <td>
+                  <div class="m-7 d-flex align-items-center">      
+                    <label>Document Type: <span class="validation-msg">*</span></label>    
+                    <span class="request-date ml-3 justify-content-between"></span>
+                    <span class="request-date ml-3 justify-content-between"></span>    
+                    <span class="request-date ml-3 justify-content-between"></span>                         
+                  </div>
+                </td>
+                <td>
+                  <span class="request-date ml-3 justify-content-between"></span>                                                  
+                  <select class="input-field" style="height:40px;" id="DocumentTypeId" name="DocumentTypeId" (change)="onDocumentTypeChange($event)"
+                  [(ngModel)]="DocumentTypeId" (blur)="onDocumentType()">
+                    <option *ngFor="let item of DocumentTypes" [value]="item.id == 'null' ? '': item.id"
+                      [selected]="item.id == DocumentTypeId">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                  <div *ngIf="documentTypeError" class="validation-msg formvalidate">
+                    <span class="request-date ml-3 justify-content-between"></span>  
+                    <span>Document Type is required</span>
+                  </div> 
+                </td>
+              </tr> 
+              <tr><td>&nbsp;</td></tr>
+              <tr>
+                <td>
+                  <div class="m-7 d-flex align-items-center">                                    
+                    <label for="">Delimiter:  <span class="validation-msg">*</span></label>
+                    <span class="request-date ml-3 justify-content-between"></span>              
+                    <div class="tooltip-wrapper tooltip-lg">
+                      <div class="tooltip-toggle icon-only">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                          <path d="M0,0H18V18H0Z" fill="none" />
+                          <path
+                            d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                        </svg>
+                      </div> 
+                      <div class="tooltip-text">
+                        If your file name is : K1 Tax Document_Mary Williams.pdf then the delimiter is Underscore (_)
+                      </div>               
+                  </div>                          
+              </div>   
+                </td>
+                <td>
+                  <span class="request-date ml-3 justify-content-between"></span>                                                  
+                  <select class="input-field" style="height: 40px;" id="NameDelimiterId" name="NameDelimiterId" (change)="onNameDelimiterChange($event)"
+                    [(ngModel)]="NameDelimiterId"(blur)="onDelimiter()">
+                    <option *ngFor="let item of NameDelimiters" [value]="item.id"
+                      [selected]="item.id == NameDelimiterId">
+                      {{ item.name }}
+                    </option>
+                  </select>     
+                  <div *ngIf="delimiterError" class="validation-msg formvalidate">
+                    <span class="request-date ml-3 justify-content-between"></span>  
+                    <span>Delimiter is required</span>
+                  </div>              
+                </td>
+              </tr> 
+              <tr><td>&nbsp;</td></tr>
+              <tr>
+                <td>
+                  <div class="m-7 d-flex align-items-center">
+                    <label for="">Name Position:  <span class="validation-msg">*</span></label>
+                    <span class="request-date ml-3 justify-content-between"></span>
+                    <div class="tooltip-wrapper tooltip-lg">
+                      <div class="tooltip-toggle icon-only">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                          <path d="M0,0H18V18H0Z" fill="none" />
+                          <path
+                            d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                        </svg>
+                      </div>
+                      <div class="tooltip-text">
+                        If your file name is: K1 Tax Document_Mary Williams.pdf then the Name Position is End of file name
+                      </div>
+                    </div>            
+                  </div>
+                </td>
+                <td>
+                  <span class="request-date ml-3 justify-content-between"></span>                                                  
+                  <select class="input-field" style="height: 40px;" id="NamePositionId" name="NamePositionId" (change)="onNamePositionChange($event)"
+                   [(ngModel)]="NamePositionId" (blur)="onNamePosition()">
+                    <option *ngFor="let item of NamePositions" [value]="item.id"
+                      [selected]="item.id == NamePositionId">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                  <div *ngIf="namePositionError" class="validation-msg formvalidate">
+                    <span class="request-date ml-3 justify-content-between"></span>  
+                    <span>Name Position is required</span>
+                  </div> 
+                </td>
+              </tr> 
+              <tr><td>&nbsp;</td></tr>
+              <tr>
+                <td>
+                  <div class="m-7 d-flex align-items-center">
+                    <label for="">Name Seperator:  <span class="validation-msg">*</span></label>
+                    <span class="request-date ml-3 justify-content-between"></span>
+                    <div class="tooltip-wrapper tooltip-lg">
+                      <div class="tooltip-toggle icon-only">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                          <path d="M0,0H18V18H0Z" fill="none" />
+                          <path
+                            d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                        </svg>
+                      </div>
+                      <div class="tooltip-text">
+                        If your file name is: K1 Tax Document_Mary Williams.pdf then the Name Position is End of file name
+                      </div>
+                    </div>            
+                  </div>
+                </td>
+                <td>
+                  <span class="request-date ml-3 justify-content-between"></span>                                                  
+                  <select class="input-field" style="height: 40px;" id="NameSeparatorId" name="NameSeparatorId" (change)="onNameSeparatorChange($event)"
+                   [(ngModel)]="NameSeparatorId"  (blur)="onNameSeparator()">
+                    <option *ngFor="let item of NameSeparators" [value]="item.id"
+                      [selected]="item.id == NameSeparatorId">
+                      {{ item.name }}
+                    </option>
+                  </select> 
+                  <div *ngIf="nameSeparatorError" class="validation-msg">
+                    <span class="request-date ml-3 justify-content-between"></span>  
+                    <span>Name Seperator is required</span>
+                  </div> 
+                  <div *ngIf="delimiterSeparatorError" class="validation-msg formvalidate">
+                    <span class="request-date ml-3 justify-content-between"></span>  
+                    <span>Name Seperator should not be same as Delimiter</span>
+                  </div>
+                </td>                
+              </tr>
+              <tr><td>&nbsp;</td></tr>          
+            </tbody>
+          </table>                                                                                                                                                                                                                                                                                                                           
+          <br/>                                             
+          <div class="modal-footer text-center">
+            <button type="button" class="button mr-3" (click)="OnBulkDocumentPopupCancel()"><span>Cancel</span></button>
+            <button class="button-outline" (click)="OnBulkDocumentPopupNext()">Next</button>
+          </div>                   
+      </div>
+    </div>
+    </div>  
+  </div> 
+  <div class="modal-wrapper" *ngIf="PublishDocumentsConfirmPopup">
+    <div class="modal" style="max-width:700px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div style="width:100%">
+            <h3>Publish Documents
+              <button style="float: right;" class="button icon-only button-clear ml-2" (click)="PublishDocumentsConfirmPopup = false">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                </svg>
+              </button>  
+            </h3>                                              
+          </div>                                                                           
+        </div>        
+        <div class="modal-content pt-3 align-items-center justify-content-between" style="max-width: 800px;max-height: 700px;overflow: auto;">
+          <div class="alert mt-3">
+            <span class="pr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px"
+                fill="#c8202f">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+              </svg>
+            </span>
+            <span> <b>Total Macthed: </b>  {{3}}</span><br/>
+            <span> <b>Total Unmatched: </b>{{1}} </span><br/>
+            <span> Note: All Unmatched will be exculded in the Publish process.</span>
+          </div>  
+          <br/>                                                                                                                                                                                                                                                                                                                                             
+          <br/>                                             
+          <div class="modal-footer text-center mt-5">
+            <button type="button" class="button mr-3" (click)="OnBulkDocumentPopupCancel()"><span>Cancel</span></button>
+            <button class="button-outline" (click)="OnBulkDocumentPopupNext()">Next</button>
+          </div>                   
+      </div>
+    </div>
+    </div> 
+  </div> 
+<div class="loader" *ngIf="Loader">
+  <div class="dot-flashing"></div>
+</div>

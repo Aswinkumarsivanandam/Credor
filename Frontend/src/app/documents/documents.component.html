@@ -1,0 +1,336 @@
+<!-- Header Start -->
+<app-header></app-header>
+<!-- Header End -->
+
+
+<div class="content-wrapper">
+  <!-- Sidebar Start -->
+  <app-side-bar></app-side-bar>
+  <!-- Sidebar End -->
+  <div class="main-container m-4">
+    <div class="sub-header d-flex align-items-center justify-content-between pb-2">
+      <h3>Investment Documents</h3>
+    </div>
+    <div class="header-nav tab-menu pl-0 mb-4 mt-4 d-flex align-items-center justify-content-between">
+      <div class="nav-right">
+        <ul class="d-flex pl-0">
+          <!-- <li class="nav-link active" [ngClass]="{active: Selected == 'Taxdocuments'}" (click)="selectTaxdocuments()">
+            Tax Documents
+          </li> -->
+          <li class="nav-link active" [ngClass]="{active: Selected == 'Subscriptions'}" (click)="selectSubscriptions()">
+            Subscriptions
+          </li>
+          <li class="nav-link active" [ngClass]="{active: Selected == 'Accreditation'}" (click)="selectAccreditation()">
+            Accreditation
+          </li>
+          <li class="nav-link active" [ngClass]="{active: Selected == 'Offeringdocuments'}"
+            (click)="selectOfferingdocuments()">
+            Offering Documents
+          </li>
+          <li class="nav-link active" [ngClass]="{active: Selected == 'Miscellaneous'}" (click)="selectMiscellaneous()">
+            Miscellaneous
+          </li>
+          <!-- <li class="nav-link active" [ngClass]="{active: Selected == 'Updates'}" (click)="selectUpdates()">
+            Updates</li> -->
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="TaxdocumentShow">
+      <p>No Tax Documents Available</p>
+    </div>
+    <div *ngIf="SubscriptionShow">
+      <div class="table-wrapper mt-4">
+        <div *ngIf="SubscriptionsValue.length <= 0">No Subscription Yet...</div>
+        <table class="documents-table" *ngIf="SubscriptionsValue.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">Offering Name</th>
+              <th scope="col">Document Name</th>
+              <th scope="col">Status</th>
+              <th scope="col">Executed On</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of SubscriptionsValue">
+              <td>-</td>
+              <td>{{item.name}}</td>
+              <td>{{item.status}}</td>
+              <td>-</td>
+              <td>
+                <span class="action-icon" (click)="onDownloadFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M13 5v6h1.17L12 13.17 9.83 11H11V5h2m2-2H9v6H5l7 7 7-7h-4V3zm4 15H5v2h14v-2z" />
+                  </svg> </span>
+                <span class="action-icon" (click)="onViewFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="OnDelete(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" style="text-align: right; !important">
+                <button type="submit" class=" button-outline mr-3" (click)="UploadDocument()">Upload Document</button>
+              </td>
+            </tr>
+          </tfoot>
+
+        </table>
+      </div>
+    </div>
+    <div *ngIf="AccreditationShow">
+      <div class="table-wrapper mt-4">
+        <div *ngIf="AccreditationValue.length <= 0">No Accreditation Yet...</div>
+        <table class="documents-table" *ngIf="AccreditationValue.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">Offering Name</th>
+              <th scope="col">Document Name</th>
+              <th scope="col">Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of AccreditationValue">
+              <td>-</td>
+              <td>{{item.name}}</td>
+              <td>{{item.createdOn | date}}</td>
+              <td>
+                <span class="action-icon" (click)="onDownloadFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M13 5v6h1.17L12 13.17 9.83 11H11V5h2m2-2H9v6H5l7 7 7-7h-4V3zm4 15H5v2h14v-2z" />
+                  </svg> </span>
+                <span class="action-icon" (click)="onViewFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="OnDelete(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td colspan="5" style="text-align: right; !important">
+                <button type="submit" class=" button-outline mr-3" (click)="UploadDocument()">Upload Document</button>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+      </div>
+    </div>
+    <div *ngIf="OfferingdocumentShow">
+      <div class="table-wrapper mt-4">
+        <div *ngIf="OfferingDocumentsValue.length <= 0">No Offering Documents Yet...</div>
+        <table class="documents-table" *ngIf="OfferingDocumentsValue.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">Offering Name</th>
+              <th scope="col">Document Name</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of OfferingDocumentsValue">
+              <td>-</td>
+              <td>{{item.name}}</td>
+              <td>
+                <span class="action-icon" (click)="onDownloadFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M13 5v6h1.17L12 13.17 9.83 11H11V5h2m2-2H9v6H5l7 7 7-7h-4V3zm4 15H5v2h14v-2z" />
+                  </svg> </span>
+                <span class="action-icon" (click)="onViewFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div *ngIf="MiscellaneouShow">
+      <div class="table-wrapper mt-4">
+        <div *ngIf="MiscellaneousValue.length <= 0">No Offering Documents Yet...</div>
+        <table class="documents-table" *ngIf="MiscellaneousValue.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">Offering Name</th>
+              <th scope="col">Document Name</th>
+              <th scope="col">Date</th>
+              <th scope="col">Note</th>
+              <th scope="col">Uploaded Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of MiscellaneousValue">
+              <td>-</td>
+              <td>{{item.name}}</td>
+              <td>-</td>
+              <td></td>
+              <td>{{item.createdOn | date}}</td>
+              <td>
+                <span class="action-icon" (click)="onDownloadFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M13 5v6h1.17L12 13.17 9.83 11H11V5h2m2-2H9v6H5l7 7 7-7h-4V3zm4 15H5v2h14v-2z" />
+                  </svg> </span>
+                <span class="action-icon" (click)="onViewFile(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="OnDelete(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+
+        </table>
+
+      </div>
+    </div>
+    <div *ngIf="UpdatesShow">
+      <div>No Documents</div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="DeleteDocumentPopup">
+    <div class="modal">
+      <div class="modal-title">
+        <h2>Delete Document</h2>
+      </div>
+      <div class="modal-content pt-0">
+        Are you sure you want to delete ?
+      </div>
+      <div class="modal-footer">
+        <button class="button-outline mr-3" (click)="DeleteDocument()">Yes</button>
+        <button type="button" class="button" (click)="DeleteDocumentPopup=false">
+          <span>No</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="uploadFile">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Upload Document</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="uploadFile = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="login-form mt-4 mb-4">
+          <div class="dropzone" appDrag (files)="onFileChange($event)">
+            <div class="text-wrapper">
+              <div class="centered">
+                <input type="file" class="sr-only" name="file" id="file" (change)="onFileChange1($event)" multiple>
+                <label for="file">Drag & drop files here or click to select files</label>
+              </div>
+            </div>
+          </div>
+          <p class="mt-2 text-center">Please Note: Maximum document size cannot exceed 100 MB and Maximum number of
+            documents which can be uploaded at once cannot be more than 10.</p>
+          <div *ngFor="let item of DocumentFile; let i = index">
+            <div class="row">
+              <div class="col">{{item.File.name}}</div>
+              <div class="col">
+                <span class="action-icon" (click)="OnRemoveDoc(item.Id)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="DocumentFile.length > 10">
+            The current document count exceed the limit of 10 documents, please ensure that the total document count is
+            not more than 10 (Current: {{DocumentFile.length}}).
+          </div>
+          <div *ngIf="DocSizeBool">
+            The following documents exceeds the file size limit of 100MB, please ensure that the document size is not
+            beyond 100 MB.
+          </div>
+          <div class=" modal-footer text-center mt-5">
+            <button class="button-outline" (click)="onSaveandUpload()">Save and Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="DocumentViewPopup">
+    <div class="modal" style="max-width: 1000px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>View Document</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="DocumentViewPopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-content pt-0">
+          <ngx-doc-viewer url="{{ViewFile.filePath}}" viewer="google" style="width:100%;height:93vh;"></ngx-doc-viewer>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="loader" *ngIf="Loader">
+  <div class="dot-flashing"></div>
+</div>

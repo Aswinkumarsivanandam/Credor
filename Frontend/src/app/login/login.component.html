@@ -1,0 +1,77 @@
+<!-- Header Start -->
+<header>
+  <div [ngClass]="UserId != null ?'main-header' : 'login-main-header pr-5 pl-5'">
+    <nav class="header-nav d-flex align-items-center justify-content-between p-0">
+      <div class="brand-wrapper">
+        <img src="../../assets/images/Credor-logo.png" class="" alt="credor-logo" width="100px">
+      </div>
+      <div class="nav-right">
+        <ul class="d-flex">
+          <li class="nav-link" *ngIf="UserId != null" routerLink='/invest' routerLinkActive="active">Invest</li>
+          <li class="nav-link" *ngIf="UserId != null" routerLink='/myinvestment' routerLinkActive="active">Dashboard
+          </li>
+          <li class="nav-link">About Us</li>
+          <li class="nav-link">Contact</li>
+          <li class="nav-link" *ngIf="UserId == null" routerLink='/login' routerLinkActive="active">Login</li>
+          <li class="nav-link" *ngIf="UserId == null" routerLink='/register' routerLinkActive="active">Sign up</li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- Header End -->
+
+
+<div class="login-content-wrapper">
+  <div class="row">
+    <div class="col-sm-7 d-flex align-items-center justify-content-center">
+      <div class="login-main-text text-center">
+        <h1>
+          Easy To Find Your Next Perfect place
+        </h1>
+        <button class="button-outline mt-3" (click)="Onexplore()">Explore</button>
+      </div>
+    </div>
+    <div class="col-sm-5">
+      <div class="login-container">
+        <div class="auth-wrapper w-100 ">
+          <h2 *ngIf="!Resetlogin" class="text-center mb-4"> Login</h2>
+          <h2 *ngIf="Resetlogin">Password Reset Successfully</h2>
+          <p *ngIf="Resetlogin" class="mb-4">You can now use your new password to log into your account</p>
+          <!-- Show this after retured from reset password page -->
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
+            <div class="field-group">
+              <label for="email" class="sr-only">Email</label>
+              <input type="text" class="input-field" placeholder="Username" id="email" formControlName="Email"
+                [ngClass]="{ 'is-invalid': submitted && f.Email.errors }">
+              <div *ngIf="submitted && f.Email.errors" class="validation-msg">
+                <div *ngIf="f.Email.errors?.required">Username is required</div>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="password" class="sr-only">Password</label>
+              <input type="password" class="input-field" placeholder="Password" id="password" formControlName="Password"
+                [ngClass]="{ 'is-invalid': submitted && f.Password.errors }" (keydown.space)="$event.preventDefault();">
+              <div *ngIf="submitted && f.Password.errors" class="validation-msg">
+                <div *ngIf="f.Password.errors?.required">Password is required</div>
+              </div>
+            </div>
+            <button type="submit" class="button button-secondary w-100" [disabled]="logindisabledBool">Login</button>
+          </form>
+          <div class="login-bottom-link d-flex align-items-center justify-content-between mt-4" *ngIf="!Resetlogin">
+            <p class="">New User?
+              <a href="javascript:void(0);" (click)="register()">Register here</a>
+            </p>
+            <p class="">
+              <a href="javascript:void(0);" (click)="goToForgetPassword()">Forgot Password?</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loader" *ngIf="Loader">
+  <div class="dot-flashing"></div>
+</div>

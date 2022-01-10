@@ -1,0 +1,16 @@
+.m-7 {
+    margin-top: -6px;
+}
+
+.important {
+    color: var(--secondary);
+}
+
+.Add-investor {
+    border: 1px solid var(--black-20);
+}
+
+.Add-investor h4 {
+    padding: 14px;
+    background: var(--black-05);
+}

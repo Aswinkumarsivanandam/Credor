@@ -1,0 +1,19 @@
+:root {
+    --primary: #2e2764;
+    --secondary: #c8202f;
+    --primary-rgb: 46, 39, 100;
+    --light: #fafafa;
+    --dark: #333333;
+    --font-size: 0.875rem;
+    --font-family: "Roboto", sans-serif;
+    --body-color: var(--primary);
+    --line-height: 1.5;
+    --line-height-heading: 1.2;
+    --border-radius: 0.25rem;
+    --border-radius-2x: 0.5rem;
+    --border-radius-3x: 0.75rem;
+    --button-padding-x: 0.3125rem;
+    --button-padding-y: 0.75rem;
+    --input-padding-x: 0.3125rem;
+    --input-padding-y: 0.75rem;
+}

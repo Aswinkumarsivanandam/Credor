@@ -1,0 +1,182 @@
+/* The switch - the box around the slider */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+
+/* Hide default HTML checkbox */
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+
+/* The slider */
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked+.slider {
+  background-color: #2196F3;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+
+/* Rounded sliders */
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
+
+
+
+.tooltip-lg .tooltip-text {
+  width: 230px;
+}
+.formtable{
+  width:80%;
+  margin:0 auto;
+}
+.dragfile{
+  height: 100px;
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #2e2764;
+}
+.step-indicator .icon:before {
+  content: '';
+  background: #b3b3b3;
+  height: 2px;
+  
+  position: absolute;
+  top: 51px;
+  margin-left: 24px;
+}
+
+
+.step-indicator .icon-current.icon1step:before {
+  width: 76px !important;
+  }
+  .step-indicator .icon-current.icon2step:before {
+    width: 54px;
+    }
+    .step-indicator .icon-current.icon3step:before {
+      width: 54px;
+      }
+      .step-indicator .icon-current.icon4step:before {
+        width: 54px;
+        }
+
+     
+        .step-indicator .icon.icon11step:before , .step-indicator .icon.icon22step:before, .step-indicator .icon.icon33step:before,
+        .step-indicator .icon.icon44step:before , .step-indicator .icon.icon11step:after {
+          background: #2e2764 !important;
+          }
+
+        .step-indicator .icon.icon11step:before {
+          width: 74px !important;
+          }
+
+.step-indicator .icon.icon1step:before {
+width: 54px;
+}
+.step-indicator .icon.icon2step:before {
+  width: 54px;
+  }
+  .step-indicator .icon.icon3step:before {
+    width: 54px;
+    }
+    .step-indicator .icon.icon4step:before {
+      width: 54px;
+      }
+    
+
+
+.step-indicator .icon1step:after {
+  content: '';
+  background: #b3b3b3;
+  height: 2px;
+  width: 54px;
+  position: absolute;
+  top: 51px;
+  margin-left: -60px;
+}
+
+.step-indicator .icon1step.icon-current:after {
+  width: 59px;
+  background: #2e2764;
+
+}
+
+.icon-current {
+ background-color: #fff;
+}
+.icon-radio {
+background-color:#fff;
+}
+
+.step-indicator .icon-current:before {
+
+  background: #2e2764;
+
+}
+
+
+li.nav-link.active:before {
+  content: "";
+  background: #c8202f;
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -22px;
+}
+.header-nav .nav-link {
+
+margin: 0.5rem 1.5rem 0.5rem 1rem;
+padding:0px !important;
+
+}

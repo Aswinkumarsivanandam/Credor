@@ -1,0 +1,260 @@
+.funding-instruction {
+    padding: 15px 0;
+    border-top: 1px solid var(--black-10);
+}
+
+.funding-panel {
+    background: var(--black-02);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  input:checked+.slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  
+  /* Rounded sliders */
+  
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  .tab-menu {
+    width:100%;
+    overflow-x: auto;
+  }
+  li.nav-link.active:before {
+    content: "";
+    background: #c8202f;
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: -22px;
+}
+.header-nav .nav-link {
+ 
+  margin: 0.5rem 1.5rem 0.5rem 1rem;
+  padding:0px !important;
+
+}
+
+.keytable{
+  margin:0 auto;
+}
+.minusimg{
+  width: 28px;
+  margin-top: -3px;
+margin-left: 17px;
+}
+.minuslabel{
+  float: left;
+}
+.minusspan{
+  display: flex;
+}
+
+.deal-card-image img {
+  width: 100%;
+  height: 369px;
+ object-fit: cover;
+}
+.deal-card-image {
+  margin: 0 auto;
+  width: 60%;    margin-bottom: 35px;    margin-top: 75px;
+}
+
+.main-container {
+ 
+  max-width: calc(100% - 57px) !important;
+}
+
+
+
+
+.inputcheck {
+  background: white;
+  padding: 10px 25px;
+  border-radius: 5px;
+}
+.formback{
+  background: white;
+  margin: 0px 20px;
+  margin-bottom: 30px;    border-radius: 8px;
+}
+.formheader{
+  background: #2e2764;
+    color: white;
+    padding: 10px 30px;    border-radius: 8px 8px 0px 0px;
+}
+.funding-panel {
+  padding-bottom: 30px;
+}
+/* The container */
+.checkcontainer {
+  display: block;
+  position: relative;
+ cursor: pointer;
+  font-size: 17px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkcontainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 25px;
+  width: 25px;border-radius: 50%;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.checkcontainer:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkcontainer input:checked ~ .checkmark {
+  background-color: #2e2764;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkcontainer input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkcontainer .checkmark:after {
+  left: 9px;
+  top: 3px;
+  width: 8px;
+  height: 15px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(
+45deg);
+}
+
+.dropzone{
+  background: rgb(238, 238, 238);
+    height: 250px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #8b8b8b;
+}
+.row.bgwhite1 {
+  background: white;
+  border-bottom: 1px solid gainsboro;
+}
+.row.bgwhite2 {
+  background: white;
+}
+.docheadtxt{
+  font-weight: bold;
+}
+.media img {
+  float: left;
+  margin-right: 10px;
+}
+img.investiconimg {
+  width: 35px;
+}.media-body h5 {
+  font-size: 16px;
+}
+.media-body {
+  display: table;
+  font-size: 13px;
+  color: #4a4a4a;
+}
+.media {
+  padding: 12px;
+  display: flex;
+  margin: 15px;
+  border-radius: 6px;
+ box-shadow: 0 2px 16px rgb(0 0 0 / 10%);
+}
+.highlights {
+  margin-right: 8px;
+background: #ffffff;    margin-top: 0px;
+  padding: 10px;
+  padding-top: 14px !important;
+  border-radius: 5px;
+  box-shadow: 0 2px 16px rgb(0 0 0 / 5%);    display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.noteinput{
+  width: inherit;
+}

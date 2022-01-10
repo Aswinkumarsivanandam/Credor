@@ -1,0 +1,30 @@
+.item-content {
+    cursor: pointer;
+}
+
+.notification-dropdown-menu {
+    position: absolute;
+    right: 0;
+    z-index: 9999;
+    background: #fff;
+    box-shadow: var(--box-shadow-2x);
+    border-radius: var(--border-radius-2x);
+    top: 100%;
+    min-width: 450px;
+}
+
+.notification-wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: var(--black-02);
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.nav-link img {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 30px;
+    height: 30px;
+}

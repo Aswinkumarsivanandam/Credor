@@ -1,0 +1,335 @@
+<!-- Header Start -->
+<header>
+  <div [ngClass]="UserId != null ?'main-header' : 'login-main-header pr-5 pl-5'">
+    <nav class="header-nav d-flex align-items-center justify-content-between p-0">
+      <div class="brand-wrapper">
+        <img src="../../assets/images/Credor-logo.png" class="" alt="credor-logo" width="100px">
+      </div>
+      <div class="nav-right">
+        <ul class="d-flex">
+          <li class="nav-link" *ngIf="UserId != null" routerLink='/invest' routerLinkActive="active">Invest</li>
+          <li class="nav-link" *ngIf="UserId != null" routerLink='/myinvestment' routerLinkActive="active">Dashboard
+          </li>
+          <li class="nav-link">About Us</li>
+          <li class="nav-link">Contact</li>
+          <li class="nav-link" *ngIf="UserId == null" routerLink='/login' routerLinkActive="active">Login</li>
+          <li class="nav-link" *ngIf="UserId == null" routerLink='/register' routerLinkActive="active">Sign up</li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- Header End -->
+
+
+<div class="login-content-wrapper">
+  <div class="row">
+    <div class="col-sm-6 d-flex align-items-center justify-content-center">
+      <div class="login-main-text text-center">
+        <h1>
+          Join Our Community
+        </h1>
+        <p class="pt-0">Create an account for full access today.</p>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="login-container">
+        <div class="auth-wrapper w-100">
+          <div class="card" *ngIf="form1">
+            <h2 class="text-center mt-4 mb-4">Sign up</h2>
+            <form [formGroup]="registerForm">
+              <div class="row">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="firstname" class="">First Name</label>
+                    <input type="text" class="input-field" placeholder="Enter the First Name" id="firstname"
+                      formControlName="Firstname" [ngClass]="{ 'is-invalid': submitted && f.Firstname.errors }"
+                      (keyup)="onFirstname($event)">
+                    <div *ngIf="FirstNameNull || FirstNameInvalid || FirstNameSpace" class="validation-msg">
+                      <div *ngIf="FirstNameNull">First Name is required</div>
+                      <div *ngIf="FirstNameInvalid">Special characters and number are not allowed</div>
+                      <div *ngIf="FirstNameSpace">Empty spaces are not allowed</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col pr-0">
+                  <div class="field-group">
+                    <label for="lastname" class="">Last Name</label>
+                    <input type="text" class="input-field" placeholder="Enter the Last Name" id="lastname"
+                      formControlName="Lastname" [ngClass]="{ 'is-invalid': submitted && f.Lastname.errors }"
+                      (keyup)="onLastname($event)">
+                    <div *ngIf="LastNameNull || LastNameInvalid || LastNameSpace" class="validation-msg">
+                      <div *ngIf="LastNameNull">Last Name is required</div>
+                      <div *ngIf="LastNameInvalid">Special characters and number are not allowed</div>
+                      <div *ngIf="LastNameSpace">Empty spaces are not allowed</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col pl-0 pr-0">
+                  <div class="field-group">
+                    <label for="email" class="">Email</label>
+                    <input type="email" class="input-field" placeholder="Enter the Email" id="email"
+                      formControlName="Email" [ngClass]="{ 'is-invalid': submitted && f.Email.errors }"
+                      (keyup)="onEmail($event)">
+                    <div *ngIf="EmptyEmail || validEmail || CompanyUserDetailsbool" class="validation-msg">
+                      <div *ngIf="EmptyEmail">Email is required</div>
+                      <div *ngIf="validEmail">Email must be a valid email address</div>
+                      <div *ngIf="CompanyUserDetailsbool">Email already exists</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="phonenumber" class="">Phone Number</label>
+                    <input type="phonenumber" class="input-field" placeholder="Enter the Phone Number" id="phonenumber"
+                      formControlName="Phonenumber" [ngClass]="{ 'is-invalid': submitted && f.Phonenumber.errors }"
+                      minlength="10" maxlength="10" (keyup)="onPhoneNumber($event)"
+                      (keypress)="numberValidation($event)">
+                    <div *ngIf="Phonenumberbool || Phonelength" class="validation-msg">
+                      <div *ngIf="Phonenumberbool">Phone Number is required</div>
+                      <div *ngIf="Phonelength">Phone Number must be a valid</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col pr-0">
+                  <div class="field-group">
+                    <label for="residency" class="">Residency</label>
+                    <select class="input-field" id="province" name="province" (change)="onchange($event)"
+                      formControlName="Residency" [(ngModel)]="ResidencyId">
+                      <option *ngFor="let item of Residency" [value]="item.id == 'null' ? '': item.id"
+                        [selected]="item.id == ResidencyId">
+                        {{ item.name }}
+                      </option>
+                    </select>
+                    <div *ngIf="Residencybool" class="validation-msg">
+                      Residency is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="CountryStateShow">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="country" class="">Country</label>
+                    <input type="text" class="input-field" placeholder="Enter the Country" id="country"
+                      formControlName="Country" [ngClass]="{ 'is-invalid': submitted && f.Country.errors }"
+                      (keyup)="onCountry($event)">
+                    <div *ngIf="CountryNull || CountryInvalid || CountrySpace" class="validation-msg">
+                      <div *ngIf="CountryNull">Country is required</div>
+                      <div *ngIf="CountryInvalid">Special characters and number are not allowed</div>
+                      <div *ngIf="CountrySpace">Empty spaces are not allowed</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label for="password" class="">Create Password</label>
+                      <div class="tooltip-wrapper tooltip-lg">
+                        <div class="tooltip-toggle icon-only clickable">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                            <path d="M0,0H18V18H0Z" fill="none" />
+                            <path
+                              d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                          </svg>
+                        </div>
+                        <div class="tooltip-text">
+                          Password must have one uppercase character.
+                          <br>Password must have one lowercase character.<br>Password must have one number.
+                          <br>Password must have one special character.<br>Password must be at least 8 characters. <br>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field-group">
+                      <div class="input-field-group">
+                        <input [type]="showPassword ? 'text' : 'password'" class="input-field"
+                          placeholder="Enter Password" id="password" formControlName="Password"
+                          [ngClass]="{ 'is-invalid': submitted && f.Password.errors }"
+                          (keydown.space)="$event.preventDefault();" (keyup)="onPassword($event)">
+                        <span class="input-field-btn view-pwd">
+                          <button class="button button-clear icon-only" (click)="Password()" type="button">
+                            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                              width="20">
+                              <path d="M0 0h24v24H0V0z" fill="none" />
+                              <path
+                                d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                            </svg>
+                            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" height="20"
+                              viewBox="0 0 24 24" width="20">
+                              <path d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z" fill="none" />
+                              <path
+                                d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                      <div class="validation-msg">
+                        <div *ngIf="EmptyPassword">Password is required</div>
+                        <div *ngIf="ValidLowercase">
+                          <br>Password must have one lowercase character
+                        </div>
+                        <div *ngIf="ValidUppercase">
+                          Password must have one uppercase character
+                        </div>
+                        <div *ngIf="ValidNumbercase">
+                          Password must have one number
+                        </div>
+                        <div *ngIf="ValidSpecialcase">
+                          Password must have one special character
+                        </div>
+                        <div *ngIf="ValidLengthcase">
+                          Password must be at least 8 characters
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col pr-0 pt-2">
+                  <label for="confirmpassword" class="">Confirm Password</label>
+                  <div class="input-field-group">
+                    <input [type]="showConfrimPassword ? 'text' : 'password'" class="input-field mt-1"
+                      placeholder="Re-enter Password" id="confirmpassword" formControlName="Confirmpassword"
+                      [ngClass]="{ 'is-invalid': submitted && f.Confirmpassword.errors }"
+                      (keydown.space)="$event.preventDefault();" (keyup)="onConfirmPassword($event)">
+                    <span class="input-field-btn view-pwd">
+                      <button class="button button-clear icon-only" (click)="ConfirmPassword()" type="button">
+                        <svg *ngIf="showConfrimPassword" xmlns="http://www.w3.org/2000/svg" height="20"
+                          viewBox="0 0 24 24" width="20">
+                          <path d="M0 0h24v24H0V0z" fill="none" />
+                          <path
+                            d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                        </svg>
+                        <svg *ngIf="!showConfrimPassword" xmlns="http://www.w3.org/2000/svg" height="20"
+                          viewBox="0 0 24 24" width="20">
+                          <path d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z" fill="none" />
+                          <path
+                            d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                        </svg>
+                      </button>
+                    </span>
+                  </div>
+                  <div class="validation-msg">
+                    <div *ngIf="EmptyConfirmPassword">Confirm password is required</div>
+                    <div *ngIf="ValidConfirmPassword">Passwords must match</div>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="button button-secondary w-100 mb-4"
+                (click)="Continue(registerForm.value)">Continue</button>
+            </form>
+          </div>
+
+
+          <div class="card" *ngIf="form2">
+            <h2 class="text-center  mb-4">Tell us more about you</h2>
+            <form [formGroup]="ContinueForm">
+              <div class="row">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="residency" class="">I am looking to invest</label>
+                    <select class="input-field" id="invest" name="invest" (change)="onlookinvest($event)"
+                      formControlName="Invest" [(ngModel)]="LookingInvestId">
+                      <option *ngFor="let item of LookingInvest" [value]="item.id"
+                        [selected]="item.id == LookingInvestId">
+                        {{ item.value }}
+                      </option>
+                    </select>
+                    <div *ngIf="lookInvestbool" class="validation-msg">
+                      Investment Capacity is required
+                    </div>
+                  </div>
+                </div>
+                <div class="col pr-0">
+                  <div class="field-group">
+
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <label for="residency" class="">Are you an<span (click)="AccredPopup = true"><a class="link"
+                            href="javascript:void(0);"> accredited investor?</a></span></label>
+                    </div>
+
+                    <select class="input-field" id="creditedinvestor" name="creditedinvestor"
+                      (change)="oninvestor($event)" formControlName="Creditedinvestor"
+                      [(ngModel)]="AccreditedInvestorId">
+                      <option *ngFor="let item of AccreditedInvestor" [value]="item.id"
+                        [selected]="item.id == AccreditedInvestorId">
+                        {{ item.value }}
+                      </option>
+                    </select>
+
+                    <div *ngIf="InvestorDatabool" class="validation-msg">
+                      Accredited Investor is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col pl-0 pr-0">
+
+                  <div class="field-group">
+                    <label for="aboutus" class="">How did you hear about us?</label>
+                    <textarea type="text" class="input-field" placeholder="Enter here" id="aboutus"
+                      formControlName="Aboutus" (keyup)="onAboutus()"></textarea>
+                    <div *ngIf="Aboutusbool" class="validation-msg">How did you hear about us is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="field-group">
+                <label for="investorTerms">
+                  <input type="checkbox" name="" id="investorTerms" (change)="checkValue($event)"
+                    formControlName="Investorterms">
+                  <span class="ml-2">I have reviewed and to the <a class="link" href="javascript:void(0);" (click)="onTermsandConditions()">Terms of
+                      Service</a>
+                    and <a class="link" href="javascript:void(0);" (click)="onPrivacyPolicy()">Privacy Policy</a></span>
+                </label>
+                <div *ngIf="Investorcheckbool" class="validation-msg">
+                  Please check the above box to indicate acceptance of Credor Terms of Service and Privacy Policy
+                </div>
+              </div>
+              <button type="submit" class="button button-secondary w-100" [disabled]="registerdisabledBool"
+                (click)="Register()">Register</button>
+            </form>
+            <div class="text-center mt-4">Already have an account?
+              <a href="javascript:void(0);" (click)="Login()">Login here</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader" *ngIf="Loader">
+    <div class="dot-flashing"></div>
+  </div>
+</div>
+<div class="modal-wrapper" *ngIf="AccredPopup">
+  <div class="modal">
+    <div class="modal-title">
+      <h3>Accredited Investor</h3>
+    </div>
+    <div class="modal-content" style="max-height: 400px;overflow:auto;">
+      <div>
+        An Accredited Investor is defined by the Securities and Exchange Commission to include a natural person with:
+      </div>
+      <ul>
+        <li>
+          A net worth or joint net worth with the persons spouse exceeding $1 million, not including the value of the
+          primary residence, and / or
+        </li>
+        <li>
+          An annual income of $200,000 in each of the two most recent years, or joint income with a spouse exceeding
+          $300,000 for those years and a reasonable expectation of the same income in the current year.
+        </li>
+      </ul>
+    </div>
+    <div class="modal-footer text-center">
+      <button type="button" class="button-outline" (click)="AccredPopup=false">Okay</button>
+    </div>
+  </div>
+</div>

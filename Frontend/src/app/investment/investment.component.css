@@ -1,0 +1,65 @@
+.diligence {
+    background: #f5f5f5;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.download {
+    cursor: pointer;
+}
+
+.form-wrapper {
+    width: 100%;
+    margin: auto;
+}
+
+.step-nav-item {
+    position: relative;
+    cursor: pointer;
+    flex: 1;
+}
+
+.step-indicator {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 50%;
+}
+
+.step-nav-item.active {
+    font-weight: bold;
+}
+
+.icon-radio {
+    opacity: 0.5;
+}
+
+.step-nav-item:not(:last-child):after {
+    content: "";
+    background: var(--black-45);
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 25px;
+    height: 6px;
+    z-index: 0;
+}
+
+.step-nav-item.done:after {
+    background: var(--primary);
+}
+
+.post-group {
+    background: #fff;
+}
+
+.funding-instruction {
+    padding: 15px 0;
+    border-top: 1px solid var(--black-10);
+}
+
+.funding-panel {
+    background: var(--black-02);
+}

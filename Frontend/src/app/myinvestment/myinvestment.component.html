@@ -1,0 +1,1436 @@
+<!-- Header Start -->
+<app-header></app-header>
+<!-- Header End -->
+
+
+<div class="content-wrapper">
+  <!-- Sidebar Start -->
+  <app-side-bar></app-side-bar>
+  <!-- Sidebar End -->
+  <main>
+    <div class="m-4" *ngIf="InvestmentData != null">
+      <div class="tab-menu mb-4">
+        <div class="deal-content">
+          <div class="deal-highlight-content d-flex justify-content-between">
+            <div class="highlights pt-0 ">
+              <h3>{{HeaderData?.activeInvestments}}</h3>
+              <p>Active Investments </p>
+            </div>
+            <div class="highlights pt-0">
+              <h3>{{HeaderData?.totalInvested | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+              <p>Total Invested</p>
+            </div>
+            <div class="highlights pt-0">
+              <h3>{{HeaderData?.totalEarnings | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+              <p>Total Earnings</p>
+            </div>
+            <div class="highlights pt-0">
+              <h3>{{HeaderData?.totalReturn}}%</h3>
+              <p>Total Return</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-nav tab-menu pl-0 mb-4">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="nav-right">
+            <ul class="d-flex pl-0">
+              <li class="nav-link" [ngClass]="{active: Selected == 'ActiveInvestment'}" (click)="ActiveInvest()">Active
+                Investments
+                <span class="bubble"
+                  [ngClass]="Selected == 'ActiveInvestment'? 'bubble' : 'bubble-inactive'">{{ActiveCount}}</span>
+              </li>
+              <li class="nav-link" [ngClass]="{active: Selected == 'PendingInvestment'}" (click)="PendingInvest()">
+                Pending Investments<span class="bubble"
+                  [ngClass]="Selected == 'PendingInvestment'? 'bubble' : 'bubble-inactive'">{{PendingCount}}</span></li>
+              <li class="nav-link" [ngClass]="{active: Selected == 'PastInvestment'}" (click)="PastInvest()">Past
+                Investments
+                <span class="bubble"
+                  [ngClass]="Selected == 'PastInvestment'? 'bubble' : 'bubble-inactive'">{{PastCount}}</span>
+              </li>
+              <li class="nav-link" [ngClass]="{active: Selected == 'Reservation'}" (click)="Reservation()">
+                Reservations<span class="bubble"
+                  [ngClass]="Selected == 'Reservation'? 'bubble' : 'bubble-inactive'">{{ReserveCount}}</span></li>
+            </ul>
+          </div>
+          <div>
+            <button class=" button-outline" (click)="onViewAvalibleOfferings()">View Available Offerings</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="marketplace-deal-wrapper">
+        <!-- <div #mapContainer id="map"></div> -->
+        <!-- <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+          <agm-marker *ngFor="let marker of Markers" [latitude]="marker.position.lat"
+            [longitude]="marker.position.lng" [label]="marker.label">
+          </agm-marker>
+        </agm-map> -->
+        <!-- <div>
+          <agm-map [latitude]="51.678418" [longitude]="7.809007" [zoom]="zoom" [disableDefaultUI]="false"
+                   >
+            <agm-marker [latitude]="51.678418" [longitude]="7.809007"></agm-marker>
+          </agm-map>
+        </div> -->
+        <div class="row">
+          <div class="col-sm-12 p-0">
+            <div class="" *ngIf="ActiveShow">
+              <div *ngIf="ActiveInvestor.length == 0">No Active Investment...</div>
+              <div *ngIf="ActiveInvestor.length > 0">
+                <div class="card-content" *ngFor="let item of ActiveInvestor">
+                  <div class="row">
+                    <div class="col-auto card-image">
+                      <img src="{{item.offeringPictureUrl}}" alt="image-missing">
+                    </div>
+                    <div class="col deal-content">
+                      <div class="d-flex justify-content-between ">
+                        <div class="deal-header mr-2">
+                          <h3>{{item.offeringName}}</h3>
+                          <p>{{item.offeringEntityName}}</p>
+                        </div>
+                        <div class="deal-sub-header d-flex">
+                          <p class="request-date" *ngIf="item.status == 1">Approved</p>
+                          <p class="request-date" *ngIf="item.status == 2">Pending Reservation</p>
+                          <p class="request-date" *ngIf="item.status == 3">Pending Investor Signature and Funding</p>
+                          <p class="request-date" *ngIf="item.status == 4">Pending Funding</p>
+                          <p class="request-date" *ngIf="item.status == 10">Pending Reservation</p>
+                          <p class="request-date ml-3"> <strong> {{item.approvedOn | date}} </strong><br> <span
+                              class="color-grey">Funded</span> </p>
+                        </div>
+                      </div>
+                      <div class="deal-highlight-content d-flex mt-3 justify-content-between">
+                        <div class="highlights">
+                          <div>
+                            <td *ngIf="item.userProfile.name != null">
+                              <h3>{{item.userProfile.name}}</h3>
+                            </td>
+                            <td *ngIf="item.userProfile.firstName != null">
+                              <h3>{{item.userProfile.firstName}} {{item.userProfile.lastName}}</h3>
+                            </td>
+                            <td *ngIf="item.userProfile.trustName != null">
+                              <h3>{{item.userProfile.trustName}}</h3>
+                            </td>
+                            <td *ngIf="item.userProfile.retirementPlanName != null">
+                              <h3>{{item.userProfile.retirementPlanName}}</h3>
+                            </td>
+                            <p>Profile</p>
+                          </div>
+                        </div>
+                        <div class="highlights">
+                          <td>
+                            <h3>{{item.fundedDate | date}}</h3>
+                            <P>Funded Date</P>
+                          </td>
+                        </div>
+                        <div class="highlights">
+                          <td>
+                            <h3>{{item.amount | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+                            <P>Amount Invested</P>
+                          </td>
+                        </div>
+                        <div class="highlights">
+                          <td>
+                            <h3>{{item.totalEarnings | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+                            <P>Total Return</P>
+                          </td>
+                        </div>
+                        <div class="highlights" *ngFor="let key of item.keyHighlights">
+                          <div *ngIf="key.visibility == true">
+                            <div *ngIf="key.name == 'Target IRR' || key.name == 'Term' || key.name == 'Type'">
+                              <h3>{{key.value}}</h3>
+                              <p>{{key.name}}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer d-flex justify-content-between mt-5">
+                        <div>
+                          <button class="button-outline mr-3" (click)="onViewDetails(item)">View Details</button>
+                          <button class="button mr-3">View Updates</button>
+                          <button class="button">Distribution History</button>
+                        </div>
+                        <div class="location">
+                          <div class="tooltip-wrapper tooltip-lg">
+                            <div class="tooltip-toggle icon-only clickable">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                                fill="#c8202f">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                  d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-1.8C18 6.57 15.35 4 12 4s-6 2.57-6 6.2c0 2.34 1.95 5.44 6 9.14 4.05-3.7 6-6.8 6-9.14zM12 2c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z" />
+                              </svg>
+                            </div>
+                            <div class="tooltip-text">
+                              2519 Co Rd 323, Liberty Hill, TX 78642, USA
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="" *ngIf="PendingShow">
+              <div *ngIf="PendingInvestor.length == 0">No Pending Investor...</div>
+              <div *ngIf="PendingInvestor.length > 0">
+                <div class="card-content" *ngFor="let item of PendingInvestor">
+                  <div class="row">
+                    <div class="col-auto card-image">
+                      <img src="{{item.offeringPictureUrl}}" alt="image-missing">
+                    </div>
+                    <div class="col deal-content">
+                      <div class="d-flex justify-content-between ">
+                        <div class="deal-header mr-2">
+                          <h3>{{item.offeringName}}</h3>
+                          <p>{{item.offeringEntityName}}</p>
+                        </div>
+                        <div class="deal-sub-header d-flex">
+                          <p class="request-date" *ngIf="item.status == 1">Approved</p>
+                          <p class="request-date" *ngIf="item.status == 2">Pending Reservation</p>
+                          <p class="request-date" *ngIf="item.status == 3">Pending Investor Signature and Funding</p>
+                          <p class="request-date" *ngIf="item.status == 4">Pending Funding</p>
+                          <p class="request-date" *ngIf="item.status == 10">Pending Reservation</p>
+                          <p class="request-date ml-3"> <strong> {{item.createdOn | date}} </strong><br> <span
+                              class="color-grey">Investment Request Date</span> </p>
+                        </div>
+                      </div>
+                      <div class="deal-highlight-content d-flex mt-3 justify-content-between">
+                        <div class="highlights">
+                          <td *ngIf="item.userProfile.name != null">
+                            <h3>{{item.userProfile.name}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.firstName != null">
+                            <h3>{{item.userProfile.firstName}} {{item.userProfile.lastName}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.trustName != null">
+                            <h3>{{item.userProfile.trustName}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.retirementPlanName != null">
+                            <h3>{{item.userProfile.retirementPlanName}}</h3>
+                          </td>
+                          <p>Profile</p>
+                        </div>
+                        <div class="highlights" *ngFor="let key of item.keyHighlights">
+                          <div *ngIf="key.visibility == true">
+                            <h3 *ngIf="key.name == 'Offering Size' || key.name == 'Minimum Investment'">{{key.value |
+                              currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+                            <h3 *ngIf="key.name != 'Offering Size' && key.name != 'Minimum Investment'">{{key.value}}
+                            </h3>
+                            <p>{{key.name}}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer d-flex justify-content-between mt-5">
+                        <div>
+                          <button class="button-outline" (click)="onViewDetails(item)">View Details</button>
+                          <button class="button ml-3" *ngIf="item.wireTransferDate == null"
+                            (click)="onFundingInstruction(item)">Funding Instructions</button>
+                          <button class="button ml-3" *ngIf="!item.iseSignCompleted"
+                            (click)="onCompleteEsign(item)">Complete eSign</button>
+                        </div>
+                        <div class="location">
+                          <div class="tooltip-wrapper tooltip-lg">
+                            <div class="tooltip-toggle icon-only clickable">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                                fill="#c8202f">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                  d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-1.8C18 6.57 15.35 4 12 4s-6 2.57-6 6.2c0 2.34 1.95 5.44 6 9.14 4.05-3.7 6-6.8 6-9.14zM12 2c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z" />
+                              </svg>
+                            </div>
+                            <div class="tooltip-text">
+                              2519 Co Rd 323, Liberty Hill, TX 78642, USA
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="" *ngIf="PastShow">
+              <div *ngIf="PastInvestor.length == 0">No Past investment...</div>
+              <div *ngIf="PastInvestor.length > 0">
+                <div class="card-content" *ngFor="let item of PastInvestor">
+                  <div class="row">
+                    <div class="col-auto card-image">
+                      <img src="{{item.offeringPictureUrl}}" alt="image-missing">
+                    </div>
+                    <div class="col deal-content">
+                      <div class="deal-header">
+                        <h3>{{item.offeringName}}</h3>
+                        <p>{{item.offeringEntityName}}</p>
+                      </div>
+                      <div class="deal-highlight-content d-flex mt-3 justify-content-between">
+                        <div class="highlights">
+                          <td *ngIf="item.userProfile.name != null">
+                            <h3>{{item.userProfile.name}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.firstName != null">
+                            <h3>{{item.userProfile.firstName}} {{item.userProfile.lastName}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.trustName != null">
+                            <h3>{{item.userProfile.trustName}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.retirementPlanName != null">
+                            <h3>{{item.userProfile.retirementPlanName}}</h3>
+                          </td>
+                          <p>Profile</p>
+                        </div>
+                        <div class="highlights" *ngFor="let key of item.keyHighlights">
+                          <div *ngIf="key.visibility == true">
+                            <h3 *ngIf="key.name == 'Offering Size' || key.name == 'Minimum Investment'">{{key.value |
+                              currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+                            <h3 *ngIf="key.name != 'Offering Size' && key.name != 'Minimum Investment'">{{key.value}}
+                            </h3>
+                            <p>{{key.name}}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer d-flex justify-content-between mt-5">
+                        <button class="button-outline" (click)="onViewDetails(item)">View Details</button>
+                        <div class="location">
+                          <div class="tooltip-wrapper tooltip-lg">
+                            <div class="tooltip-toggle icon-only clickable">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                                fill="#c8202f">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                  d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-1.8C18 6.57 15.35 4 12 4s-6 2.57-6 6.2c0 2.34 1.95 5.44 6 9.14 4.05-3.7 6-6.8 6-9.14zM12 2c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z" />
+                              </svg>
+                            </div>
+                            <div class="tooltip-text">
+                              2519 Co Rd 323, Liberty Hill, TX 78642, USA
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="" *ngIf="ResShow">
+              <div *ngIf="ReservationInvestor.length == 0">No Reservations...</div>
+              <div *ngIf="ReservationInvestor.length > 0">
+                <div class="card-content" *ngFor="let item of ReservationInvestor">
+                  <div class="row ">
+                    <div class="col-auto card-image">
+                      <img src="{{item.offeringPictureUrl}}" alt="image-missing">
+                    </div>
+                    <div class="col deal-content">
+                      <div class="d-flex justify-content-between">
+                        <div class="deal-header">
+                          <h3>{{item.offeringName}}</h3>
+                          <p>{{item.offeringEntityName}}</p>
+                        </div>
+                        <div class="deal-sub-header d-flex">
+                          <p class="request-date ml-3"> <strong> {{item.createdOn | date}} </strong><br> <span
+                              class="color-grey">Request Date</span> </p>
+                        </div>
+                      </div>
+                      <div class="d-flex mt-3 ">
+                        <div class="highlights">
+                          <td *ngIf="item.userProfile.name != null">
+                            <h3>{{item.userProfile.name}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.firstName != null">
+                            <h3>{{item.userProfile.firstName}} {{item.userProfile.lastName}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.trustName != null">
+                            <h3>{{item.userProfile.trustName}}</h3>
+                          </td>
+                          <td *ngIf="item.userProfile.retirementPlanName != null">
+                            <h3>{{item.userProfile.retirementPlanName}}</h3>
+                          </td>
+                          <p>Profile</p>
+                        </div>
+                        <div class="highlights">
+                          <h3>{{item.amount | currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+                          <p>Reservation Amount</p>
+                        </div>
+                      </div>
+                      <div class="card-footer d-flex justify-content-between mt-5">
+                        <div>
+                          <button class="button-outline mr-3" (click)="onViewDetails(item)">View Details</button>
+                          <button class="button" (click)="onEditReservation(item)">Edit Reservation</button>
+                        </div>
+                        <div class="location">
+                          <div class="tooltip-wrapper tooltip-lg">
+                            <div class="tooltip-toggle icon-only clickable">
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                                fill="#c8202f">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                  d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-1.8C18 6.57 15.35 4 12 4s-6 2.57-6 6.2c0 2.34 1.95 5.44 6 9.14 4.05-3.7 6-6.8 6-9.14zM12 2c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z" />
+                              </svg>
+                            </div>
+                            <div class="tooltip-text">
+                              2519 Co Rd 323, Liberty Hill, TX 78642, USA
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-wrapper" *ngIf="ViewDetails">
+      <div class="modal" style="max-width: 1100px;">
+        <div class="modal-title pb-0">
+          <div class="company-wrapper d-flex align-items-center justify-content-between">
+            <div>
+              <h3 class="">{{ViewDetailsDataValue.offeringName}}</h3>
+            </div>
+            <div>
+              <button class="button icon-only button-clear ml-2" (click)="CloseViewDetails(ViewDetailsDataValue)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-content px-4">
+          <div class="deal-details d-flex mb-5">
+            <div class="deal-details-card-image">
+              <!-- <img src="assets/images/deal-image1.png" alt="" width=""> -->
+              <img src={{ViewDetailsDataValue.offeringPictureUrl}} alt="">
+            </div>
+            <div class="deal-details-card">
+              <div class="deal-highlight-content d-flex">
+                <div class="highlights" *ngFor="let key of ViewDetailsDataValue.keyHighlights">
+                  <div *ngIf="key.visibility == true">
+                    <h3 *ngIf="key.name == 'Offering Size' || key.name == 'Minimum Investment'">{{key.value |
+                      currency:'USD' : 'symbol' : '1.0-0'}}</h3>
+                    <h3 *ngIf="key.name != 'Offering Size' && key.name != 'Minimum Investment'">{{key.value}}
+                    </h3>
+                    <p>{{key.name}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer mt-4">
+                <!-- <button *ngIf="ViewDetailsDataValue.active == true && ViewDetailsDataValue.isReservation == false"
+                  class="button-outline-secondary w-100" [disabled]="InvestDisabled"
+                  (click)="onInvestNow(ViewDetailsDataValue)">Invest
+                  now</button> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="deal-summary-wrapper">
+            <div class="header-nav summary-tab-menu pl-0 mb-4 d-flex align-items-center justify-content-between">
+              <div class="nav-right">
+                <ul class="d-flex pl-0">
+                  <li class="summary-nav-link active" [ngClass]="{active: Selected == 'Summary'}"
+                    (click)="selectSummary()">
+                    Summary</li>
+                  <li class="summary-nav-link active" [ngClass]="{active: Selected == 'Documents'}"
+                    (click)="selectDocument()">
+                    Documents</li>
+                  <li class="summary-nav-link active" [ngClass]="{active: Selected == 'Location'}"
+                    (click)="selectLocation()">
+                    Location</li>
+                  <li class="summary-nav-link active" [ngClass]="{active: Selected == 'Update'}"
+                    (click)="selectUpdate()">
+                    Update</li>
+                </ul>
+              </div>
+            </div>
+            <div class="deal-summary-content" *ngIf="summaryBool">
+              <div class="summery-texts" *ngFor="let sum of ViewDetailsSummaryValue">
+                <ckeditor [editor]="Editor" data="{{sum.summary}}" [(ngModel)]="sum.summary" [disabled]="Ckbool">
+                </ckeditor>
+              </div>
+            </div>
+            <div class="deal-summary-content d-flex justify-content-center" *ngIf="documentBool">
+              <div class="text-center" *ngFor="let doc of ViewDetailsDocValue">
+                <div class="documents-wrapper m-3">
+                  <img src="../../assets/images/icons/pdf.png" alt="" width="48" height="48" *ngIf="doc.type == 'pdf'">
+                  <img src="../../assets/images/icons/word.png" alt="" width="48" height="48"
+                    *ngIf="doc.type == 'word'  || doc.type == 'Docx'">
+                  <img src="../../assets/images/icons/xls.png" alt="" width="48" height="48" *ngIf="doc.type == 'xlxx'">
+                  <img src="../../assets/images/icons/ppt.png" alt="" width="48" height="48" *ngIf="doc.type == 'pptx'">
+                  <div class="preview-file-name">{{doc.name}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="deal-summary-content" *ngIf="locationBool">
+              <div class="text-center" *ngFor="let loc of ViewDetailsLocationValue">
+                <p>{{loc.location}}</p>
+              </div>
+              <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+                <agm-marker *ngFor="let marker of Markers" [latitude]="marker.position.lat"
+                  [longitude]="marker.position.lng" [label]="marker.label">
+                </agm-marker>
+              </agm-map>
+              <!-- <div>
+                <agm-map [latitude]="51.678418" [longitude]="7.809007" [zoom]="zoom" [disableDefaultUI]="false"
+                         >
+                  <agm-marker [latitude]="51.678418" [longitude]="7.809007"></agm-marker>
+                </agm-map>
+              </div> -->
+            </div>
+            <div class="deal-summary-content" *ngIf="updatenBool">
+              <div class="text-center" *ngFor="let loc of ViewDetailsUpdateValue">
+                <ckeditor [editor]="Editor" data="{{loc.content}}" [(ngModel)]="loc.content" [disabled]="Ckbool">
+                </ckeditor>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="modal-wrapper" *ngIf="EditReservationPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <h3>Edit Reservation</h3>
+          <button class="button icon-only button-clear ml-2" (click)="EditReservationPopup = false">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-content" style="max-height: 400px;overflow:auto;">
+        <div class="">
+          <div class="field-group">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Investing As</label>
+                <select name="" id="" [(ngModel)]="InvestingProfile" (click)="onChooseProfileChange($event)">
+                  <option *ngFor="let item of ProfileValue" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == InvestingProfile">
+                    <span *ngIf="item.name != null">{{ item.name }}</span>
+                    <span *ngIf="item.firstName != null">{{ item.name }}</span>
+                    <span *ngIf="item.trustName != null">{{ item.name }}</span>
+                    <span *ngIf="item.retirementPlanName != null">{{ item.name }}</span>
+                  </option>
+                </select>
+                <div *ngIf="InvestError" class="validation-msg">
+                  <div *ngIf="InvestError">Selected Profile is required</div>
+                </div>
+              </div>
+              <div class="col mt-3">
+                <button type="button" class="button-outline" (click)="onAddNewProfile()">Add New Profile</button>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="investmentamount" class="">Investment Amount</label>
+                <input type="text" class="input-field" placeholder="Enter Amount Here" [(ngModel)]="InvestmentAmount"
+                  (blur)="onInsAmt($event)">
+                <div *ngIf="InsAmtError || MinimumError" class="validation-msg">
+                  <div *ngIf="InsAmtError">Invested Amount is required</div>
+                  <div *ngIf="MinimumError">Investment Amount is greater than reservation size</div>
+                </div>
+              </div>
+              <div class="col mt-3">
+                <h4 class="">Minimum Investment</h4>
+                <div>{{MinInvestment}}</div>
+                <!-- <input type="text" class="input-field" [(ngModel)]="MinInvestment"> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=" modal-footer text-center mt-5">
+        <button class="button mr-3" (click)="onReserve('withdraw')">Withdraw</button>
+        <button class="button-outline-secondary mr-3" (click)="onReserve('update')">Update</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="ProfilePopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Add New Profile</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="ProfilePopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="login-form mt-4 mb-4">
+          <div class="row">
+            <div class="col">
+              <label for="">Choose Profile<span class="important">*</span></label>
+              <select name="" id="" [(ngModel)]="Chooseprofile" (click)="onChooseProfileChange1($event)">
+                <option *ngFor="let item of ChooseProfileValue" [value]="item.id == 'null' ? '': item.id"
+                  [selected]="item.id == Chooseprofile">
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <form *ngIf="IRAShow" [formGroup]="IRAForm">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">IRA Name<span class="important">*</span> </label>
+                <input type="text" formControlName="Iraname" placeholder="Enter IRA Custodian Name"
+                  (blur)="onIRAName($event)">
+                <div *ngIf="IranameError" class="validation-msg">
+                  <div *ngIf="IranameError">Profile Name is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">In care of (Optional)</label>
+                <input type="text" formControlName="Incare" placeholder="In care of (Optional)">
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Street Address 1</label>
+                <input type="text" formControlName="Streetaddress1" placeholder="Enter IRA Custodian Address 1">
+              </div>
+              <div class="col">
+                <label for="">Street Address 2</label>
+                <input type="text" formControlName="Streetaddress2" placeholder="Enter IRA Custodian Address 2">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">City</label>
+                <input type="text" formControlName="City" placeholder="Enter City Name">
+              </div>
+              <div class="col">
+                <label for="">State/Province</label>
+                <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId"
+                  (change)="onProvinceChange($event)">
+                  <option *ngFor="let item of Province" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == StateProvinceId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-4" *ngIf="CountryStateShow">
+              <div class="col">
+                <label for="">Country</label>
+                <input type="text" formControlName="Country" placeholder="Enter Country">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <input type="text" formControlName="State" placeholder="Enter State">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Zip Code</label>
+                <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code">
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Tax ID</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      For tax purposes a tax ID number is required, e.g. the SSN, EIN, ITIN, SIN, or any other Tax ID
+                      associated with this profile.
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="m-7" formControlName="Taxid" placeholder="Enter Tax ID" minlength="10"
+                  maxlength="11" (blur)="onTaxid($event)">
+                <div *ngIf="TaxError" class="validation-msg">Format should be 123-45-6789 or 12-3456789 or 123-456-789
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <form *ngIf="LLCShow" [formGroup]="LLCForm">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">LLC, Corporation, or Partnership Name<span class="important">*</span> </label>
+                <input type="text" formControlName="Llcname" placeholder="Enter Profile Name"
+                  (blur)="onLLCNameChange($event)">
+                <div *ngIf="LlcnameError" class="validation-msg">
+                  <div *ngIf="LlcnameError">Profile Name is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">In care of (Optional)</label>
+                <input type="text" formControlName="Incare" placeholder="In care of (Optional)">
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Street Address 1</label>
+                <input type="text" formControlName="Streetaddress1" placeholder="Enter Street Address 1">
+              </div>
+              <div class="col">
+                <label for="">Street Address 2</label>
+                <input type="text" formControlName="Streetaddress2" placeholder="Enter Street Address 2">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">City</label>
+                <input type="text" formControlName="City" placeholder="Enter City Name">
+              </div>
+              <div class="col">
+                <label for="">State/Province</label>
+                <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId"
+                  (change)="onProvinceChange($event)">
+                  <option *ngFor="let item of Province" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == StateProvinceId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-4" *ngIf="CountryStateShow">
+              <div class="col">
+                <label for="">Country</label>
+                <input type="text" formControlName="Country" placeholder="Enter Country">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <input type="text" formControlName="State" placeholder="Enter State">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Zip Code</label>
+                <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code">
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Tax ID</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      For tax purposes a tax ID number is required, e.g. the SSN, EIN, ITIN, SIN, or any other Tax ID
+                      associated with this profile.
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="m-7" formControlName="Taxid" placeholder="Enter Tax ID" minlength="10"
+                  maxlength="11" (blur)="onTaxid($event)">
+                <div *ngIf="TaxError" class="validation-msg">Format should be 123-45-6789 or 12-3456789 or 123-456-789
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Is this a Disregarded Entity ?</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      A disregarded entity is owned 100% by one individual or one entity. This means that your entity
+                      does not file its own tax return. Entities with more than one owner are not disregarded entities.
+                    </div>
+                  </div>
+                </div>
+                <select name="" id="" formControlName="Disregardedentity" [(ngModel)]="Disregardedentity"
+                  (change)="onDisregardedEntityChange($event)">
+                  <option value="0">Select</option>
+                  <option value="1">Yes</option>
+                  <option value="2">No</option>
+                </select>
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Is this an IRA LLC?</label>
+                </div>
+                <select name="" id="" formControlName="Irallc" [(ngModel)]="Irallc" (change)="onIRALLCChange($event)">
+                  <option value="0">Select</option>
+                  <option value="1">Yes</option>
+                  <option value="2">No</option>
+                </select>
+              </div>
+            </div>
+          </form>
+
+          <form *ngIf="Individualhow" [formGroup]="IndividualForm">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">First Name<span class="important">*</span> </label>
+                <input type="text" formControlName="Firstname" placeholder="Enter First Name"
+                  (blur)="onFirstname($event)">
+                <div *ngIf="FirstnameError" class="validation-msg">
+                  <div *ngIf="FirstnameError">First Name is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">Last Name<span class="important">*</span></label>
+                <input type="text" formControlName="Lastname" placeholder="Enter Last Name" (blur)="onLastname($event)">
+                <div *ngIf="LastnameError" class="validation-msg">
+                  <div *ngIf="LastnameError">Last Name is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Street Address 1</label>
+                <input type="text" formControlName="Streetaddress1" placeholder="Enter Street Address 1">
+              </div>
+              <div class="col">
+                <label for="">Street Address 2</label>
+                <input type="text" formControlName="Streetaddress2" placeholder="Enter Street Address 2">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">City</label>
+                <input type="text" formControlName="City" placeholder="Enter the City Name">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId"
+                  (change)="onProvinceChange($event)">
+                  <option *ngFor="let item of Province" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == StateProvinceId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-4" *ngIf="CountryStateShow">
+              <div class="col">
+                <label for="">Country</label>
+                <input type="text" formControlName="Country" placeholder="Enter Country">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <input type="text" formControlName="State" placeholder="Enter State">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Zip Code</label>
+                <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code">
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Tax ID</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      For tax purposes a tax ID number is required, e.g. the SSN, EIN, ITIN, SIN, or any other Tax ID
+                      associated with this profile.
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="m-7" formControlName="Taxid" placeholder="Enter Tax ID" minlength="10"
+                  maxlength="11" (blur)="onTaxid($event)">
+                <div *ngIf="TaxError" class="validation-msg">Format should be 123-45-6789 or 12-3456789 or 123-456-789
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <form *ngIf="TrustShow" [formGroup]="TrustForm">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Trust Name<span class="important">*</span> </label>
+                <input type="text" formControlName="Trustname" placeholder="Enter Profile Name"
+                  (blur)="onTrustname($event)">
+                <div *ngIf="TrustnameError" class="validation-msg">
+                  <div *ngIf="TrustnameError">Profile is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">In care of (Optional)</label>
+                <input type="text" formControlName="Incare" placeholder="In care of (Optional)">
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Street Address 1</label>
+                <input type="text" formControlName="Streetaddress1" placeholder="Enter Street Address 1">
+              </div>
+              <div class="col">
+                <label for="">Street Address 2</label>
+                <input type="text" formControlName="Streetaddress2" placeholder="Enter Street Address 2">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">City</label>
+                <input type="text" formControlName="City" placeholder="Enter the City Name">
+              </div>
+              <div class="col">
+                <label for="">State/Province</label>
+                <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId"
+                  (change)="onProvinceChange($event)">
+                  <option *ngFor="let item of Province" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == StateProvinceId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-4" *ngIf="CountryStateShow">
+              <div class="col">
+                <label for="">Country</label>
+                <input type="text" formControlName="Country" placeholder="Enter Country">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <input type="text" formControlName="State" placeholder="Enter State">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Zip Code</label>
+                <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code">
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Tax ID</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      For tax purposes a tax ID number is required, e.g. the SSN, EIN, ITIN, SIN, or any other Tax ID
+                      associated with this profile.
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="m-7" formControlName="Taxid" placeholder="Enter Tax ID" minlength="10"
+                  maxlength="11" (blur)="onTaxid($event)">
+                <div *ngIf="TaxError" class="validation-msg">Format should be 123-45-6789 or 12-3456789 or 123-456-789
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="form-inputs" *ngIf="JointShow">
+            <div *ngIf="ArrayForm.length > 0">
+              <div class="Add-investor pb-4 mt-4" *ngFor="let arr of ArrayForm;index as i">
+                <h4> <strong>Investor {{1+i}}: <span>{{arr.FirstName}} {{arr.LastName}}</span></strong> </h4>
+                <div class="row mt-4">
+                  <div class="col">
+                    <label for="">First Name</label>
+                    <input type="text" placeholder="Enter First Name" [(ngModel)]="arr.FirstName"
+                      (blur)="onArrayFirstname($event)">
+                    <div *ngIf="ArrayFirstnameError" class="validation-msg">
+                      <div *ngIf="ArrayFirstnameError">First Name is required</div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <label for="">Last Name</label>
+                    <input type="text" [(ngModel)]="arr.LastName" placeholder="Enter Last Name"
+                      (blur)="onArrayLastname($event)">
+                    <div *ngIf="ArrayLastnameError" class="validation-msg">
+                      <div *ngIf="ArrayLastnameError">First Name is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col">
+                    <label for="">Email</label>
+                    <input type="text" placeholder="Enter Email" [disabled]="arr.IsOwner == true"
+                      [(ngModel)]="arr.EmailId" (blur)="onArrayEmail($event)">
+                    <div *ngIf="ArrayEmail || ArrayvalidEmail" class="validation-msg">
+                      <div *ngIf="ArrayEmail">Email is required</div>
+                      <div *ngIf="ArrayvalidEmail">Invalid Email</div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <label for="">Phone</label>
+                    <input type="text" [(ngModel)]="arr.Phone" (blur)="onArrayPhone($event)"
+                      (keypress)="numberValidation($event)" maxlength="10">
+                    <div *ngIf="ArrayPhoneEmpty || ArrayPhonelength" class="validation-msg">
+                      <div *ngIf="ArrayPhoneEmpty">Phone is required</div>
+                      <!-- <div *ngIf="ArrayPhonelength">Phone is required</div> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="button-outline ml-3 mt-4" (click)="onAddInvestor()">Add
+              Investor</button>
+          </div>
+          <form *ngIf="JointShow" [formGroup]="JointForm">
+            <div class="row mt-4">
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Registration Name<span class="important">*</span> </label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      Please enter the exact name you wish to be on the investment e.g. Jim Smith and Jill Smith Joint
+                      Tenants with Right of Survivorship
+                    </div>
+                  </div>
+                </div>
+                <input type="text" formControlName="Registrationname" placeholder="Enter Registration Name"
+                  (blur)="onRegistrationnameChange($event)">
+                <div *ngIf="RegistrationnameError" class="validation-msg">
+                  <div *ngIf="RegistrationnameError">Registration Name is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">In care of (Optional)</label>
+                <input type="text" formControlName="Incare" placeholder="In care of (Optional)">
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Street Address 1</label>
+                <input type="text" formControlName="Streetaddress1" placeholder="Enter Street Address 1">
+              </div>
+              <div class="col">
+                <label for="">Street Address 2</label>
+                <input type="text" formControlName="Streetaddress2" placeholder="Enter Street Address 2">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">City</label>
+                <input type="text" formControlName="City" placeholder="Enter the City Name">
+              </div>
+              <div class="col">
+                <label for="">State/Province</label>
+                <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId"
+                  (change)="onProvinceChange($event)">
+                  <option *ngFor="let item of Province" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == StateProvinceId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-4" *ngIf="CountryStateShow">
+              <div class="col">
+                <label for="">Country</label>
+                <input type="text" formControlName="Country" placeholder="Enter Country">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <input type="text" formControlName="State" placeholder="Enter State">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Zip Code</label>
+                <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code">
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Tax ID</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      For tax purposes a tax ID number is required, e.g. the SSN, EIN, ITIN, SIN, or any other Tax ID
+                      associated with this profile.
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="m-7" formControlName="Taxid" placeholder="Enter Tax ID" minlength="10"
+                  maxlength="11" (blur)="onTaxid($event)">
+                <div *ngIf="TaxError" class="validation-msg">Format should be 123-45-6789 or 12-3456789 or 123-456-789
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <form *ngIf="RetirementShow" [formGroup]="RetirementForm">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Name Of Retirement Plan<span class="important">*</span> </label>
+                <input type="text" formControlName="Retirementname" placeholder="Enter Name Of Retirement Plan"
+                  (blur)="onRetirementnameChanges($event)">
+                <div *ngIf="RetirementnameError" class="validation-msg">
+                  <div *ngIf="RetirementnameError">Retirement Plan Name is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">Name & Title of Signor<span class="important">*</span></label>
+                <input type="text" formControlName="Titlesignor" placeholder="Enter Name & Title of Signor"
+                  (blur)="onTitlesignorChanges($event)">
+                <div *ngIf="TitlesignorError" class="validation-msg">
+                  <div *ngIf="TitlesignorError">Signor Name is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Street Address 1</label>
+                <input type="text" formControlName="Streetaddress1" placeholder="Enter Street Address 1">
+              </div>
+              <div class="col">
+                <label for="">Street Address 2</label>
+                <input type="text" formControlName="Streetaddress2" placeholder="Enter Street Address 2">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">City</label>
+                <input type="text" formControlName="City" placeholder="Enter the City Name">
+              </div>
+              <div class="col">
+                <label for="">State/Province</label>
+                <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId"
+                  (change)="onProvinceChange($event)">
+                  <option *ngFor="let item of Province" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == StateProvinceId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-4" *ngIf="CountryStateShow">
+              <div class="col">
+                <label for="">Country</label>
+                <input type="text" formControlName="Country" placeholder="Enter Country">
+              </div>
+              <div class="col">
+                <label for="">State</label>
+                <input type="text" formControlName="State" placeholder="Enter State">
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Zip Code</label>
+                <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code">
+              </div>
+              <div class="col">
+                <div class="m-7 d-flex align-items-center justify-content-between">
+                  <label for="">Tax ID</label>
+                  <div class="tooltip-wrapper tooltip-lg">
+                    <div class="tooltip-toggle icon-only">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                        <path d="M0,0H18V18H0Z" fill="none" />
+                        <path
+                          d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                      </svg>
+                    </div>
+                    <div class="tooltip-text">
+                      For tax purposes a tax ID number is required, e.g. the SSN, EIN, ITIN, SIN, or any other Tax ID
+                      associated with this profile.
+                    </div>
+                  </div>
+                </div>
+                <input type="text" class="m-7" formControlName="Taxid" placeholder="Enter Tax ID" minlength="10"
+                  maxlength="11" (blur)="onTaxid($event)">
+                <div *ngIf="TaxError" class="validation-msg">Format should be 123-45-6789 or 12-3456789 or 123-456-789
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="distribution">
+            <h3 class="company-wrapper mb-4 mt-4">Distribution</h3>
+            <div class="row ">
+              <div class="col">
+                <label for="">Distribution Method</label>
+                <select name="" id="" [(ngModel)]="Distributionmethod" (click)="onDistrubutionMethodChange($event)">
+                  <option *ngFor="let item of DistributionValue" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == DistrubutionId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="USAddressError">
+              <h3>Checks can be delivered only to U.S. address.</h3>
+            </div>
+            <div class="row mt-4" *ngIf="ACHBool">
+              <div class="col">
+                <label for="">Bank Account</label>
+                <select name="" id="" [(ngModel)]="BankAccountId" (blur)="onBankAccountChange($event)">
+                  <option *ngFor="let item of BankDetailsData" [value]="item.id == 'null' ? '': item.id"
+                    [selected]="item.id == BankAccountId">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col mt-3">
+                <label for=""></label>
+                <button class="button-outline mr-3" (click)="onBankAccount()">Add Bank
+                  Account</button>
+              </div>
+            </div>
+            <div class="row" *ngIf="CheckBool">
+              <form [formGroup]="CheckForm">
+                <div class="row mt-4">
+                  <div class="col">
+                    <label for="">In care of (Optional)</label>
+                    <input type="text" formControlName="Incare" placeholder="In care of (Optional)">
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col">
+                    <label for="">Street Address 1</label>
+                    <input type="text" formControlName="Streetaddress1" placeholder="Enter Street Address 1"
+                      (blur)="onStreetChanges($event)">
+                    <div *ngIf="StreetBool" class="validation-msg">
+                      <div *ngIf="StreetBool">Address Line 1 is required</div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <label for="">Street Address 2</label>
+                    <input type="text" formControlName="Streetaddress2" placeholder="Enter Street Address 2">
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col">
+                    <label for="">City</label>
+                    <input type="text" formControlName="City" placeholder="Enter City Name"
+                      (blur)="onCityChanges($event)">
+                    <div *ngIf="CityBool" class="validation-msg">
+                      <div *ngIf="CityBool">City is required</div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <label for="">State/Province</label>
+                    <select name="" id="" formControlName="Province" [(ngModel)]="StateProvinceId1"
+                      (change)="onProvinceChange1($event)">
+                      <option *ngFor="let item of CheckProvince" [value]="item.id == 'null' ? '': item.id"
+                        [selected]="item.id == StateProvinceId1">
+                        {{ item.name }}
+                      </option>
+                    </select>
+                    <div *ngIf="StateError" class="validation-msg">
+                      <div *ngIf="StateError">State is required</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="col">
+                    <label for="">Zip Code</label>
+                    <input type="text" formControlName="Zipcode" placeholder="Enter Zip Code"
+                      (blur)="onZipcodeChanges($event)">
+                    <div *ngIf="ZipcodeBool" class="validation-msg">
+                      <div *ngIf="ZipcodeBool">Zipcode is required</div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="row" *ngIf="OtherBool">
+              <div class="row mt-4">
+                <div class="col">
+                  <label for="">Other Details</label>
+                  <input type="text" [(ngModel)]="OtherDetails" placeholder="Enter Other Details">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class=" text-center mt-5">
+            <button class="button-outline-secondary mr-3" (click)="ProfilePopup = false">Cancel</button>
+            <button class="button-outline" (click)="onSaveProfile()">Save Profile</button>
+            <!-- <button class="button-outline" *ngIf="ViewBool" (click)="onEditProfile()">Edit Profile</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="BankPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3 *ngIf="!BankTitleShow">Add Bank Account</h3>
+            <h3 *ngIf="BankTitleShow">Update Bank Account</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="BankPopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="login-form mt-4 mb-4">
+          <form [formGroup]="BankForm">
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Bank Name</label>
+                <input type="text" placeholder="Enter the Bank Name" formControlName="Bankname"
+                  (blur)="onBanknameChanges($event)">
+                <div *ngIf="BanknameError" class="validation-msg">
+                  Bank Name is required
+                </div>
+              </div>
+              <div class="col">
+                <label for="">Account Type</label>
+                <select name="" id="" formControlName="Accounttype" (blur)="onAccounttypeChanges($event)"
+                  [(ngModel)]="Accounttype">
+                  <option value="0" selected>Select</option>
+                  <option value="1">Savings</option>
+                  <option value="2">Checking</option>
+                </select>
+                <div *ngIf="AccounttypeError" class="validation-msg">Account Type is required</div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Routing Number</label>
+                <input type="password" placeholder="Enter Routing Number" formControlName="Routingnumber"
+                  (keypress)="numberValidation($event)" (blur)="onRoutingnumChanges($event)" maxlength="9">
+                <div *ngIf="RoutingnumberError || RoutingnumberLength" class="validation-msg">
+                  <div *ngIf="RoutingnumberError">Routing Number is required</div>
+                  <div *ngIf="RoutingnumberLength">Routing Number must be exactly 9 characters</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">Confirm Routing Number</label>
+                <div class="input-field-group">
+                  <input [type]="showRouting ? 'text' : 'password'" placeholder="Enter Routing Number"
+                    formControlName="Confirmroutingnumber" (keypress)="numberValidation($event)"
+                    (blur)="onConRoutingnumChanges($event)" maxlength="9">
+                  <span class="input-field-btn view-pwd">
+                    <button class="button button-clear icon-only" (click)="Routing()" type="button">
+                      <svg *ngIf="showRouting" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                        width="20">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                      </svg>
+                      <svg *ngIf="!showRouting" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                        width="20">
+                        <path d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+                <div *ngIf="ConfirmroutingnumberError || ConfirmRoutingMatch" class="validation-msg">
+                  <div *ngIf="ConfirmroutingnumberError">Confirm Routing Number is required</div>
+                  <div *ngIf="ConfirmRoutingMatch">Routing Number didn't match</div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <label for="">Account Number</label>
+                <input type="password" placeholder="Enter Account Number" formControlName="Accountnumber" maxlength="20"
+                  (blur)="onAccountnumberChanges($event)">
+                <div *ngIf="AccountnumberError" class="validation-msg">
+                  <div *ngIf="AccountnumberError">Account Number is required</div>
+                </div>
+              </div>
+              <div class="col">
+                <label for="">Confirm Account Number</label>
+                <div class="input-field-group">
+                  <input [type]="showAccount ? 'text' : 'password'" placeholder="Enter Account Number"
+                    formControlName="Confirmaccountnumber" maxlength="20" (blur)="onConfirmaccountnumChanges($event)">
+                  <span class="input-field-btn view-pwd">
+                    <button class="button button-clear icon-only" (click)="Account()" type="button">
+                      <svg *ngIf="showAccount" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                        width="20">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                      </svg>
+                      <svg *ngIf="!showAccount" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24"
+                        width="20">
+                        <path d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+                <div *ngIf="ConfirmaccountnumberError || ConfirmAccountMatch" class="validation-msg">
+                  <div *ngIf="ConfirmaccountnumberError">Confirm Account Number is Required</div>
+                  <div *ngIf="ConfirmAccountMatch">Account Number didn't match</div>
+                </div>
+              </div>
+            </div>
+
+            <div class=" modal-footer text-center mt-5">
+              <button class="button-outline-secondary mr-3" (click)="BankPopup = false">Cancel</button>
+              <button class="button-outline" (click)="onBankSave()">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="loader" *ngIf="Loader">
+  <div class="dot-flashing"></div>
+</div>

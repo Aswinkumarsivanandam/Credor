@@ -1,0 +1,738 @@
+<!-- Header Start -->
+<app-header></app-header>
+<!-- Header End -->
+
+
+<div class="content-wrapper">
+  <!-- Sidebar Start -->
+  <app-side-bar></app-side-bar>
+  <!-- Sidebar End -->
+  <div class="main-container m-4">
+
+
+<div class="container-fluid mb-4">
+
+<div class="row">
+
+<div class="col-md-3 pl-0">
+  <div class=" dashhigh">
+    <div class="dashboard">
+      <img src="../../assets/images/portfolio/approved.svg">
+    </div>
+              <div class="dashboardtxt">  <h3>{{LeadSummary?.totalLeads}}</h3>
+                <p>Total Leads</p></div>
+    
+    
+              </div>
+
+</div>
+
+
+<div class="col-md-3 pl-0">
+  <div class=" dashhigh">
+    <div class="dashboard">
+      <img src="../../assets/images/portfolio/approved.svg">
+    </div>
+              <div class="dashboardtxt"> <h3>{{LeadSummary?.accreditedLeads}}</h3>
+                <p>Accredited Leads</p></div>
+    
+    
+              </div>
+
+</div>
+
+<div class="col-md-3 pl-0">
+  <div class=" dashhigh">
+    <div class="dashboard">
+      <img src="../../assets/images/portfolio/approved.svg">
+    </div>
+              <div class="dashboardtxt">  <h3>{{LeadSummary?.verifiedLeads}}</h3>
+                <p>Verified Leads</p></div>
+    
+    
+              </div>
+
+</div>
+
+<div class="col-md-3 pl-0">
+  <div class=" dashhigh ">
+    <div class="dashboard">
+      <img src="../../assets/images/portfolio/approved.svg">
+    </div>
+              <div class="dashboardtxt">   <h3>{{LeadSummary?.unverifiedLeads}}</h3>
+                <p>Unverified Leads</p></div>
+    
+    
+              </div>
+
+</div>
+
+</div>
+</div>
+
+
+
+
+
+
+    <div class="d-flex align-items-center justify-content-between pb-2" *ngIf="LeadDetails != null">
+      <div>
+        <h3>Leads</h3>
+      </div>
+      <div>
+        <button type="button" class="button mr-3" (click)="MultipleResendInvite()">Resend Invites</button>
+        <button type="button" class="button-outline" (click)="onAddLead()">Add Lead</button>
+      </div>
+    </div>
+    <div class="documents-table pt-3 pb-3 divradius" *ngIf="LeadDetails != null">
+
+      <div class="row">
+        <div class="col">
+          <div>
+            Investment Capacity:
+            <select class="input-field" id="invest" name="invest" (change)="onInvestCapFilter($event)"
+              [(ngModel)]="InvestCapId">
+              <option *ngFor="let item of LookingInvest" [value]="item.id" [selected]="item.id == InvestCapId">
+                {{ item.value }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+        <div class="col">
+          <div>
+            Residency:
+            <select class="input-field" id="province" name="province" (change)="onResidencyFilter($event)"
+              [(ngModel)]="ResidencyFilterId">
+              <option *ngFor="let item of Residency" [value]="item.id == 'null' ? '': item.id"
+                [selected]="item.id == ResidencyFilterId">
+                {{ item.name }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+        <div class="col">
+
+          <div>
+            Self Acc:
+            <select class="input-field" (change)="onSelfAccFilter($event)" [(ngModel)]="SelfAccFilterId">
+              <option *ngFor="let item of AccreditedInvestor" [value]="item.id" [selected]="item.id == SelfAccFilterId">
+                {{ item.value }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div>
+            Reg Type:
+            <select class="input-field" (change)="onRegTypeFilter($event)" [(ngModel)]="RegTypeFilterId">
+              <option *ngFor="let item of RegType" [value]="item.id" [selected]="item.id == RegTypeFilterId">
+                {{ item.value }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+
+          <div>
+            Verified:
+            <select class="input-field" (change)="onVerifyFilter($event)" [(ngModel)]="VerifyFilterId">
+              <option *ngFor="let item of AccreditedInvestor" [value]="item.id" [selected]="item.id == VerifyFilterId">
+                {{ item.value }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="mt-3">
+            <button class="button-outline-secondary" (click)="onResetAll()">Reset All</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div *ngIf="LeadDetails != null">
+      <div class="row">
+        <div class="col pl-0 pr-0">
+          <div class="table-wrapper leadtable mt-4">
+            <div class="table-actions tableradius documents-table pl-3 pr-3">
+              <div class="d-flex justify-content-between align-items-center pt-3">
+                <div class="d-flex justify-content-between pt-3">
+                  <div class="mr-2 mb-3">
+                    <label for="" class="mr-2"> Show:</label>
+                    <select name="" id="" style="width:150px" (change)="onChooseDataPerPage($event)">
+                      <option value="0" selected>Select</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="15">15</option>
+                      <option value="20">20</option>
+                    </select>
+                  </div>
+                  <div class="mr-2 mb-3">
+                    <label for="" class="mr-2"> Tags:</label>
+                    <select name="" id="" style="width:150px" (change)="onChooseTags($event)">
+                      <option *ngFor="let item of TagDetails" [value]="item.id == 'null' ? '': item.id"
+                        [selected]="item.id == TagDetailsId">
+                        {{ item.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <button class="button-outline-secondary d-flex align-items-center mr-3" (click)="DeleteUser()"
+                        [disabled]="ChooseBool">
+                      <!--  <svg class="mr-1 delete-icon" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
+                          width="18px" fill="#c8202f">
+                          <path d="M0 0h24v24H0V0z" fill="none" />
+                          <path
+                            d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                        </svg>-->
+                        Delete User
+                      </button>
+                    </div>
+                    <div>
+                      <button type="button" class="button-outline mr-3 " [disabled]="ChooseBool" (click)="onAddTag()">Add
+                        Tag</button>
+                    </div>
+                    <div>
+                      <button type="button" class="button-outline mr-3" [disabled]="ChooseBool">Send
+                        Email</button>
+                    </div>
+                    <div><input type="text" class="input-field deal-search" placeholder="Search" (input)="FilterLead($event)"></div> 
+
+                  </div>
+
+                
+                </div>
+              </div>
+            
+
+            </div>
+            <div *ngIf="LeadDetails == 0">No Lead Yet...</div>
+            <table class="documents-table" *ngIf="LeadDetails.length > 0">
+              <thead>
+                <tr>
+                  <th>
+                    <input type="checkbox" (change)="SelectAll($event)" [(ngModel)]="SelectAllCheckbox">
+                  </th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Investment Capacity</th>
+                  <th scope="col">Residency</th>
+                  <th scope="col">SelfAcc</th>
+                  <th scope="col">Last Logged in</th>
+                  <th scope="col">Verify Account</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of LeadDetails  | paginate: config">
+                  <td style="width: 40px;">
+                    <input type="checkbox" (change)="Select(item,$event)" [checked]="item.selected">
+                  </td>
+                  <td><b>{{item.fullName}}</b><br>{{item.emailId}}<br>{{item.phoneNumber}}</td>
+                  <td>{{LookingInvest[item.capacity]?.value}}</td>
+                  <td>{{Residency[item.residency]?.name}}</td>
+                  <td *ngIf="item.isAccreditedInvestor == true">Yes</td>
+                  <td *ngIf="item.isAccreditedInvestor == false">No</td>
+                  <td *ngIf="item.isAccreditedInvestor == null"></td>
+                  <td *ngIf="item.lastLogin != null">{{item.lastLogin | date}}</td>
+                  <td *ngIf="item.lastLogin == null">{{item.lastLogin1}}</td>
+                  <td *ngIf="item.verifyAccount ==  true">
+                    <label class="switch">
+                      <input type="checkbox" [(ngModel)]="item.verifyAccount" (click)="onVerifyAccount(item,false)">
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                  <td *ngIf="item.verifyAccount ==  false || item.verifyAccount ==  null">
+                    <label class="switch">
+                      <input type="checkbox" (click)="onVerifyAccount(item,true)">
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                  <td>
+                    <span class="action-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                        fill="#000000">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
+                      </svg>
+                    </span>
+                    <span class="action-icon" (click)="EditLead(item)">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                      </svg>
+                    </span>
+                    <span class="action-icon" (click)="onNotes(item)"><svg xmlns="http://www.w3.org/2000/svg"
+                        height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                      </svg></span>
+                    <span class="action-icon" (click)="onSingleResendInvite(item)">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                        fill="#000000">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                      </svg>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          
+            <pagination-controls *ngIf="LeadDetails.length > 0" (pageChange)="pageChanged($event)">
+            </pagination-controls>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="AddLeadPopup">
+    <div class="modal" style="max-width: 1000px;">
+      <div class="modal-title pb-3">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h2 *ngIf="AddLeadDetailsShow">Add Lead</h2>
+            <h2 *ngIf="EditDetailsShow">Edit Profile</h2>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="CancelLead()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="col br-right" *ngIf="AddLeadShow">
+          <div class="company-wrapper-popup text-center" *ngIf="AddLeadDetailsShow">
+            <h4>Invite Lead</h4>
+          </div>
+          <div class="modal-content pt-0">
+            <form [formGroup]="AddLeadForm">
+              <div class="row mt-4">
+                <div class="col">
+                  <span class="label color-primary-tint">First Name<span class="validation-msg"> *</span></span>
+                  <input type="text" class="input-field" placeholder="Enter the First Name" formControlName="FirstName"
+                    (blur)="onLeadFirstName()">
+                  <div *ngIf="LeadFirstnameError" class="validation-msg">
+                    <span>First Name is required</span>
+                  </div>
+                </div>
+                <div class="col">
+                  <span class="label color-primary-tint">Last Name<span class="validation-msg"> *</span></span>
+                  <input type="text" class="input-field" placeholder="Enter the Last Name" formControlName="LastName"
+                    (blur)="onLeadLastName()">
+                  <div *ngIf="LeadLastnameError" class="validation-msg">
+                    <span>Last Name is required</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <span class="label color-primary-tint">Nickname</span>
+                  <input type="text" class="input-field" formControlName="NickName" placeholder="Enter the Nickname">
+                </div>
+
+                <div class="col">
+                  <span class="label color-primary-tint">Email<span class="validation-msg"> *</span></span>
+                  <input type="text" class="input-field" formControlName="Email" placeholder="Enter the Email"
+                    (blur)="onLeadEmail()">
+                  <div *ngIf="AddLeadEmailError || validEmail" class="validation-msg">
+                    <span *ngIf="AddLeadEmailError">Email is required</span>
+                    <span *ngIf="validEmail">Invalid Email</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <label for="phonenumber" class="">Phone Number</label>
+                  <input type="phonenumber" class="input-field" placeholder="Enter the Phone Number" id="phonenumber"
+                    formControlName="Phonenumber" minlength="10" maxlength="10" (keypress)="numberValidation($event)">
+                </div>
+                <div class="col">
+                  <label for="residency" class="">Residency</label>
+                  <select class="input-field" id="province" name="province" (change)="onchange($event)"
+                    formControlName="Residency" [(ngModel)]="ResidencyId">
+                    <option *ngFor="let item of Residency" [value]="item.id == 'null' ? '': item.id"
+                      [selected]="item.id == ResidencyId">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-4" *ngIf="CountryShow">
+                <div class="col pl-0">
+                  <div class="field-group">
+                    <label for="country" class="">Country</label>
+                    <input type="text" class="input-field" placeholder="Enter the Country" id="country"
+                      formControlName="Country">
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <label for="residency" class="">Investment Capacity?</label>
+                  <select class="input-field" id="invest" name="invest" formControlName="Invest"
+                    [(ngModel)]="LookingInvestId">
+                    <option *ngFor="let item of LookingInvest" [value]="item.id"
+                      [selected]="item.id == LookingInvestId">
+                      {{ item.value }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label *ngIf="AddLeadDetailsShow">Accredited</label>
+                  <div class="m-7 d-flex align-items-center" *ngIf="EditDetailsShow">
+                    <label>Self Accreditation?</label>
+                    <div class="tooltip-wrapper tooltip-lg">
+                      <div class="tooltip-toggle icon-only">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                          <path d="M0,0H18V18H0Z" fill="none" />
+                          <path
+                            d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                        </svg>
+                      </div>
+                      <div class="tooltip-text">
+                        Self Accreditation is how they responded at registration when they were asked if they were
+                        accredited.
+                      </div>
+                    </div>
+                  </div>
+                  <select class="input-field" id="creditedinvestor" name="creditedinvestor"
+                    (change)="oninvestor($event)" formControlName="Creditedinvestor" [(ngModel)]="AccreditedInvestorId">
+                    <option *ngFor="let item of AccreditedInvestor" [value]="item.id"
+                      [selected]="item.id == AccreditedInvestorId">
+                      {{ item.value }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <span class="label color-primary-tint">How did you hear about us?</span>
+                  <input type="text" class="input-field" id="firstName" formControlName="HowdidYouHear">
+                </div>
+                <div class="col" *ngIf="AddLeadDetailsShow">
+                  <div class="m-7 d-flex align-items-center">
+                    <label>Verify Account?</label>
+                    <div class="tooltip-wrapper tooltip-lg">
+                      <div class="tooltip-toggle icon-only">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 18 18">
+                          <path d="M0,0H18V18H0Z" fill="none" />
+                          <path
+                            d="M8.3,5.5H9.7V6.9H8.3Zm0,2.8H9.7v4.2H8.3ZM9,2a7,7,0,1,0,7,7A7,7,0,0,0,9,2ZM9,14.6A5.6,5.6,0,1,1,14.6,9,5.607,5.607,0,0,1,9,14.6Z" />
+                        </svg>
+                      </div>
+                      <div class="tooltip-text">
+                        This helps you keep track of who you have a relationship with. You can make offerings available
+                        to only to verified Users.
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="VerifyAccount">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="company-wrapper mt-5">
+                <h3>Email Subscriptions</h3>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <div>
+                    <label>Company Newsletter / Updates</label>
+                  </div>
+                  <div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="NewletterUpdate">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div>
+                    <label>New Investment Announcements</label>
+                  </div>
+                  <div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="InvestmentAnnoucements">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-4" *ngIf="AddLeadDetailsShow">
+                <label for="receiveEmail">
+                  <input type="checkbox" name="" id="receiveEmail" (change)="onEmailConfirmAccount()"
+                    formControlName="EmailConfirmAccount">
+                  <span class="ml-2">Send an email to the user to confirm the account</span>
+                </label>
+              </div>
+              <div class="modal-footer bottom-align text-center mt-5">
+                <button class="button mr-3" (click)="CancelLead()">Cancel</button>
+                <button class="button-outline mr-3" *ngIf="AddLeadDetailsShow" (click)="onAddLeadSave()">Add
+                  Lead</button>
+                <button class="button-outline mr-3" *ngIf="EditDetailsShow" (click)="onAddLeadSave()">Update
+                  Profile</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col" *ngIf="AddLeadsShow">
+          <div class="company-wrapper-popup text-center">
+            <h4>Bulk Invite</h4>
+          </div>
+          <div class="modal-content pt-0">
+            <div class="text-center mt-4">
+              Download this sample file and format your leads accordingly before uploading
+            </div>
+            <div class="row mt-2">
+              <div class="dropzone" appDrag (files)="onFileChange($event)">
+                <div class="text-wrapper">
+                  <div class="centered">
+                    <input type="file" class="sr-only" name="file" id="file" (change)="onFileChange1($event)" multiple>
+                    <div class="fs-14">Upload CSV File by clicking or Drag and Drop File here</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sub-text text-center mt-3">
+              <label>{{DocumentValidCheck}}</label>
+            </div>
+            <div *ngFor="let item of DocumentFile; let i = index">
+              <div class="row">
+                <div class="col">{{item.File.name}}</div>
+                <div class="col">
+                  <span class="action-icon" (click)="removeCSVFile()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                      fill="#000000">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="DocSizeBool" class="validation-msg mt-2">
+              The following documents exceeds the file size limit of 15MB, please ensure that the document size is not
+              beyond 15 MB.
+            </div>
+            <div class="row mt-4">
+              <label for="receiveEmail">
+                <input type="checkbox" name="" id="receiveEmail" (change)="onEmailConfirmAccount()"
+                  [(ngModel)]="EmailConfirmAccount1">
+                <span class="ml-2">Send an email to the user to confirm the account</span>
+              </label>
+            </div>
+            <div class="modal-footer text-center bottom-align">
+              <button class="button mr-3" (click)="AddLeadPopup = false">Cancel</button>
+              <button class="button-outline">Add Leads</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="NotePopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Add Notes</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="NotePopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <table class="documents-table" *ngIf="TableView">
+          <thead>
+            <tr>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of LeadData">
+              <td>{{item.notes}}</td>
+              <td>
+                <span class="action-icon" (click)="EditNote(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#03260A">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                  </svg>
+                </span>
+                <span class="action-icon" (click)="DeleteNote(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                  </svg>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="WriteNoteBool" class="mt-3 text-center">
+          <textarea [(ngModel)]="Notes" class="input-field" rows="2" placeholder="Write a note here"></textarea>
+          <button class="button mr-3" (click)="OnCancel()">Cancel</button>
+          <button class="button-outline mr-3" *ngIf="!EditBool" (click)="NoteSave()">Save</button>
+          <button class="button-outline" *ngIf="EditBool" (click)="NoteSave()">Update</button>
+        </div>
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;"
+          *ngIf="LeadData.length == 0 && InvestorEmpty">
+          No Notes Avalible!
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button class="button-outline mr-3" (click)="onWriteANote()">Write a note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="ResendInvitePopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Resend Invites</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="ResendInvitePopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;">
+          Are you sure you want to send the Invitation to everyone who has not registered?
+          <table class="documents-table" *ngIf="ResendInviteArray.length > 0">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of ResendInviteArray">
+                <td>{{item.fullName}}</td>
+                <td>
+                  <span class="action-icon" (click)="RemoveResend(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                      fill="#000000">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                    </svg>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer text-center mt-3">
+          <button type="button" class="button" (click)="ResendInvitePopup=false"><span>Cancel</span></button>
+          <button class="button-outline mr-3" (click)="ResendInvite()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="AddTagPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3>Add Tag</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="AddTagPopup = false">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;">
+          <label>Tag Name</label>
+          <input list="browsers" id="browser" class="input-field" [(ngModel)]="TagName">
+          <datalist id="browsers">
+            <select name="" id="">
+              <option *ngFor="let item of TagDetails" [selected]="item.id == TagDetailsId">
+                <span *ngIf="item.id != 0">{{ item.name }}</span>
+              </option>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+              </svg>
+            </select>
+          </datalist>
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button type="button" class="button mr-3" (click)="AddTagPopup=false"><span>Cancel</span></button>
+          <button class="button-outline" (click)="onSaveTag()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-wrapper" *ngIf="VerifyAccountPopup">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-title pb-0">
+        <div class="company-wrapper d-flex align-items-center justify-content-between">
+          <div>
+            <h3 *ngIf="verifyuser">Verify Account</h3>
+            <h3 *ngIf="!verifyuser">Unverify Account</h3>
+          </div>
+          <div>
+            <button class="button icon-only button-clear ml-2" (click)="CancelVerifyAccount()">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-content pt-3" style="max-height: 400px;overflow:auto;">
+          <span *ngIf="verifyuser">Are you sure you want to verify this user?</span>
+          <span *ngIf="!verifyuser">Are you sure you want to unverify this user?</span>
+        </div>
+        <div class="modal-footer text-center mt-5">
+          <button type="button" class="button mr-3" (click)="CancelVerifyAccount()"><span>Cancel</span></button>
+          <button class="button-outline" (click)="onSaveVerifyAccount()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="loader" *ngIf="Loader">
+  <div class="dot-flashing"></div>
+</div>
